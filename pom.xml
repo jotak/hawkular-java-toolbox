@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2017 Red Hat, Inc. and/or its affiliates
+    and other contributors as indicated by the @author tags.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.hawkular</groupId>
+    <artifactId>hawkular-parent</artifactId>
+    <version>43</version>
+  </parent>
+
+  <groupId>org.hawkular.metrics</groupId>
+  <artifactId>hawkular-java-toolbox-parent</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>Hawkular Java Toolbox</name>
+  <description>A java client library for Hawkular</description>
+
+  <modules>
+    <module>hawkular-java-toolbox</module>
+    <module>dropwizard-binder</module>
+  </modules>
+
+  <url>http://www.hawkular.org/</url>
+  <inceptionYear>2017</inceptionYear>
+  <organization>
+    <name>Red Hat, Inc.</name>
+    <url>http://redhat.com/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:ssh://github.com/jotak/hawkular-java-toolbox</connection>
+    <developerConnection>scm:git:ssh://github.com/jotak/hawkular-java-toolbox</developerConnection>
+    <url>https://github.com/jotak/hawkular-java-toolbox</url>
+  </scm>
+  <ciManagement>
+    <system>Travis-ci</system>
+    <url>https://travis-ci.org/jotak/hawkular-java-toolbox</url>
+  </ciManagement>
+
+  <properties>
+    <!-- Maven plugin versions -->
+    <version.org.codehaus.mojo.findbugs-maven-plugin>3.0.0</version.org.codehaus.mojo.findbugs-maven-plugin>
+    <version.maven-surefire-report-plugin>2.6</version.maven-surefire-report-plugin>
+
+    <!-- Dependency versions -->
+    <glassfish-json.version>1.0.4</glassfish-json.version>
+    <hawkular.version>0.25.0-SNAPSHOT</hawkular.version>
+    <slf4j.version>1.7.7</slf4j.version>
+    <snakeyaml.version>1.12</snakeyaml.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.hawkular.metrics</groupId>
+        <artifactId>hawkular-dropwizard-reporter</artifactId>
+        <version>${hawkular.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hawkular.metrics</groupId>
+        <artifactId>hawkular-metrics-clients-common</artifactId>
+        <version>${hawkular.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>${snakeyaml.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>javax.json</artifactId>
+        <version>${glassfish-json.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.6.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+
+        <!-- Conventions:
+          * all org.apache.* plugins are managed in hawkular-parent
+          * before adding new plugins here
+            * look first to hawkular-parent
+            * or consider adding the plugin to hawkular-parent
+        -->
+
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>${version.org.codehaus.mojo.findbugs-maven-plugin}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <configuration>
+          <excludes combine.children="append">
+            <!-- Ignore Coverity files (useful on Travis) -->
+            <exclude>cov-int/**</exclude>
+            <exclude>analysis-results.tgz</exclude>
+            <!-- Exclude the cassandra.yaml file since modified from the Cassandra upstream project.-->
+            <exclude>src/main/docker/cassandra.yaml</exclude>
+            <!-- Exclude JAX-RS impl diff files -->
+            <exclude>api/diff.txt</exclude>
+            <exclude>api/diff-excludes</exclude>
+            <!-- Exclude sample page dependencies -->
+            <exclude>samples/rhmap/web/libs/**</exclude>
+            <!-- Exclude vim swap files -->
+            <exclude>**/.*.sw*</exclude>
+            <!-- Exclude the standalone.xml file since it comes from upstream EAP -->
+            <exclude>src/main/docker/standalone.xml</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>${version.org.codehaus.mojo.findbugs-maven-plugin}</version>
+        <configuration>
+          <xmlOutput>true</xmlOutput>
+          <effort>Max</effort>
+          <threshold>Default</threshold>
+        </configuration>
+        <inherited>true</inherited>
+      </plugin>
+
+    </plugins>
+
+  </reporting>
+
+</project>
