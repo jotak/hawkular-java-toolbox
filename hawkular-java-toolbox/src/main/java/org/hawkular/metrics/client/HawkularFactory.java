@@ -16,11 +16,21 @@
  */
 package org.hawkular.metrics.client;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.hawkular.metrics.client.common.HawkularClientConfig;
 import org.hawkular.metrics.client.config.HawkularYamlConfig;
@@ -37,6 +47,17 @@ public class HawkularFactory {
     private static final Logger LOG = LoggerFactory.getLogger(HawkularFactory.class);
     private static final String PROPKEY_CONFIG_FILE = "hawkular.java.toolbox.config";
     private static final String DEFAULT_FILE_PATH = "hawkular.yaml";
+    private static final List<Variable> VARIABLES = new ArrayList<>();
+
+    static {
+        VARIABLES.add(new Variable(Pattern.compile("\\$\\{host}"), () -> {
+            try {
+                return InetAddress.getLocalHost().getCanonicalHostName();
+            } catch (UnknownHostException e) {
+                return "?";
+            }
+        }));
+    }
 
     private final HawkularClientConfig config;
 
@@ -71,11 +92,47 @@ public class HawkularFactory {
             }
             Yaml yaml = new Yaml(new Constructor(HawkularYamlConfig.class));
             InputStream input = new FileInputStream(configFile);
-            return (HawkularYamlConfig) yaml.load(input);
+            return replaceVariables((HawkularYamlConfig) yaml.load(input));
         } catch (IOException e) {
             LOG.error("Could not read Yaml config: ", e);
             return loadUnconfigured();
         }
+    }
+
+    private static HawkularYamlConfig replaceVariables(HawkularYamlConfig config) {
+        if (config.getTenant() != null) {
+            config.setTenant(replaceVariables(config.getTenant()));
+        }
+        if (config.getPrefix() != null) {
+            config.setPrefix(replaceVariables(config.getPrefix()));
+        }
+        if (config.getGlobalTags() != null) {
+            Map<String, String> replaced = config.getGlobalTags().entrySet().stream()
+                    .collect(toMap(
+                            Map.Entry::getKey,
+                            e -> replaceVariables(e.getValue())
+                    ));
+            config.setGlobalTags(replaced);
+        }
+        if (config.getPerMetricTags() != null) {
+            Map<String, Map<String, String>> replaced = config.getPerMetricTags().entrySet().stream()
+                    .collect(toMap(
+                            Map.Entry::getKey,
+                            tags -> tags.getValue().entrySet().stream()
+                                .collect(toMap(
+                                        Map.Entry::getKey,
+                                        e -> replaceVariables(e.getValue())
+                                ))));
+            config.setPerMetricTags(replaced);
+        }
+        return config;
+    }
+
+    private static String replaceVariables(String source) {
+        for (Variable variable : VARIABLES) {
+            source = variable.replace(source);
+        }
+        return source;
     }
 
     private static HawkularYamlConfig loadUnconfigured() {
@@ -149,5 +206,21 @@ public class HawkularFactory {
      */
     public HawkularClientBuilder builder() {
         return HawkularClientBuilder.fromConfig(config);
+    }
+
+    private static class Variable {
+        private final Pattern pattern;
+        private final Supplier<String> replacementSupplier;
+
+        private Variable(Pattern pattern, Supplier<String> replacementSupplier) {
+            this.pattern = pattern;
+            this.replacementSupplier = replacementSupplier;
+        }
+
+        private String replace(String source) {
+            String replacement = replacementSupplier.get();
+            Matcher matcher = pattern.matcher(source);
+            return matcher.replaceAll(replacement);
+        }
     }
 }

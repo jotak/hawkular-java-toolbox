@@ -19,11 +19,14 @@ package org.hawkular.metrics.client;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.hawkular.metrics.client.config.HawkularClientInfo;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -32,6 +35,13 @@ import org.junit.Test;
 public class HawkularFactoryTest {
 
     private static final String KEY = "hawkular.java.toolbox.config";
+    private static String HOST = "";
+
+    @BeforeClass
+    public static void setupClass() throws UnknownHostException {
+        InetAddress address = InetAddress.getLocalHost();
+        HOST = address.getCanonicalHostName();
+    }
 
     @Before
     public void resetProps() {
@@ -49,9 +59,9 @@ public class HawkularFactoryTest {
         System.setProperty(KEY, "src/test/resources/hawkular1.yaml");
         HawkularClientInfo info = HawkularFactory.load().create().getInfo();
         assertThat(info.getTenant()).isEqualTo("cyrus");
-        assertThat(info.getPrefix()).hasValue("${host}.");
+        assertThat(info.getPrefix()).hasValue(HOST + ".");
         assertThat(info.getGlobalTags()).containsOnly(
-                entry("hostname", "${host}"),
+                entry("hostname", HOST),
                 entry("owner", "jdoe"));
         assertThat(info.getPerMetricTags()).isEmpty();
     }
@@ -60,7 +70,7 @@ public class HawkularFactoryTest {
     public void shouldCreateFromExplicitPath() {
         HawkularClientInfo info = HawkularFactory.loadFrom("src/test/resources/hawkular2.yaml").create().getInfo();
         assertThat(info.getTenant()).isEqualTo("darius");
-        assertThat(info.getPrefix()).hasValue("${host}.");
+        assertThat(info.getPrefix()).hasValue(HOST + ".");
         assertThat(info.getPerMetricTags()).containsOnlyKeys("guava.cache.read");
         Map<String, String> tags = info.getPerMetricTags().get("guava.cache.read");
         assertThat(tags).containsOnly(entry("impl", "guava"));
