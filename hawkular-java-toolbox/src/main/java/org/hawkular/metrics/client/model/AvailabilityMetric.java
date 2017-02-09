@@ -41,10 +41,6 @@ public class AvailabilityMetric extends Metric {
         listener.onChanged(this, DataPoint.availDataPoint(System.currentTimeMillis(), Availability.UNKNOWN));
     }
 
-    public void admin() {
-        listener.onChanged(this, DataPoint.availDataPoint(System.currentTimeMillis(), Availability.ADMIN));
-    }
-
     public void up(Map<String, String> tags) {
         listener.onChanged(this, DataPoint.availDataPoint(System.currentTimeMillis(), Availability.UP, tags));
     }
@@ -55,9 +51,5 @@ public class AvailabilityMetric extends Metric {
 
     public void unknown(Map<String, String> tags) {
         listener.onChanged(this, DataPoint.availDataPoint(System.currentTimeMillis(), Availability.UNKNOWN, tags));
-    }
-
-    public void admin(Map<String, String> tags) {
-        listener.onChanged(this, DataPoint.availDataPoint(System.currentTimeMillis(), Availability.ADMIN, tags));
     }
 }

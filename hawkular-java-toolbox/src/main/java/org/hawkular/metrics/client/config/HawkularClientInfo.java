@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
+import org.hawkular.metrics.client.RegexTags;
 import org.hawkular.metrics.client.common.http.HawkularHttpClient;
 
 /**

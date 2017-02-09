@@ -30,29 +30,29 @@ import org.hawkular.metrics.client.model.Watch;
 /**
  * @author Joel Takvorian
  */
-public class SegmentedMetric {
+public class MetricBuilder {
 
     private final HawkularClient hawkularClient;
     private final Map<String, String> tags = new HashMap<>();
     private final Map<String, String> segments = new LinkedHashMap<>();
     private String separator = ".";
 
-    public SegmentedMetric(HawkularClient hawkularClient) {
+    public MetricBuilder(HawkularClient hawkularClient) {
         this.hawkularClient = hawkularClient;
     }
 
-    public SegmentedMetric addSegment(String name, String value) {
+    public MetricBuilder addSegment(String name, String value) {
         segments.put(name, value);
         tags.put(name, value);
         return this;
     }
 
-    public SegmentedMetric addTag(String key, String value) {
+    public MetricBuilder addTag(String key, String value) {
         tags.put(key, value);
         return this;
     }
 
-    public SegmentedMetric separator(String separator) {
+    public MetricBuilder separator(String separator) {
         this.separator = separator;
         return this;
     }

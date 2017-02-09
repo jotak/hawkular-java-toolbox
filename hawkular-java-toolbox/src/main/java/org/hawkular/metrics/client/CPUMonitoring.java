@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.hawkular.metrics.client.model.Gauge;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.management.OperatingSystemMXBean;
 
@@ -33,7 +35,7 @@ import com.sun.management.OperatingSystemMXBean;
  */
 public class CPUMonitoring implements MonitoringSession.FeederSet {
 
-    private static final HawkularLogger HWK = HawkularFactory.logger(CPUMonitoring.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CPUMonitoring.class);
 
     private final Map<String, String> tags;
 
@@ -63,10 +65,11 @@ public class CPUMonitoring implements MonitoringSession.FeederSet {
         int availableProcessors = divideByAvailableProcs ? operatingSystemMXBean.getAvailableProcessors() : 1;
         long prevUpTime = runtimeMXBean.getUptime();
         long prevProcessCpuTime = operatingSystemMXBean.getProcessCpuTime();
+        // TODO: that's temporary...
         try {
             Thread.sleep(500);
         } catch (Exception e) {
-            HWK.error(e);
+            LOG.error("CPU reporting error", e);
         }
 
         operatingSystemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();

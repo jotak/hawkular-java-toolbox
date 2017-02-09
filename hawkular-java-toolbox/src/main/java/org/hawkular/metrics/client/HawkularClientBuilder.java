@@ -31,7 +31,6 @@ import org.hawkular.metrics.client.common.HawkularClientConfig;
 import org.hawkular.metrics.client.common.http.HawkularHttpClient;
 import org.hawkular.metrics.client.common.http.JdkHawkularHttpClient;
 import org.hawkular.metrics.client.config.HawkularClientInfo;
-import org.hawkular.metrics.client.config.RegexTags;
 
 public class HawkularClientBuilder {
 
@@ -273,7 +272,17 @@ public class HawkularClientBuilder {
         return new HawkularClient(new HawkularClientInfo(client, headers.get(KEY_HEADER_TENANT), prefix, globalTags, perMetricTags, regexTags));
     }
 
-    public HawkularLogger buildLogger() {
-        return new HawkularLogger(build());
+    public HawkularLogger buildLogger(Class<?> clazz) {
+        HawkularClient client = this.addGlobalTag("class", clazz.getName())
+                .prefixedWith(clazz.getSimpleName() + ".")
+                .build();
+        return new HawkularLogger(client);
+    }
+
+    public HawkularLogger buildLogger(String source) {
+        HawkularClient client = this.addGlobalTag("source", source)
+                .prefixedWith(source + ".")
+                .build();
+        return new HawkularLogger(client);
     }
 }

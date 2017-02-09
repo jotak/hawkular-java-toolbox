@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import org.hawkular.metrics.client.common.HawkularClientConfig;
 import org.hawkular.metrics.client.config.HawkularYamlConfig;
@@ -31,44 +32,122 @@ import org.yaml.snakeyaml.constructor.Constructor;
 /**
  * @author Joel Takvorian
  */
-public final class HawkularFactory {
+public class HawkularFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(HawkularFactory.class);
-    // TODO: change location (system properties?)
-    private static final HawkularClientConfig CONFIG = load("hawkular.yaml");
+    private static final String PROPKEY_CONFIG_FILE = "hawkular.java.toolbox.config";
+    private static final String DEFAULT_FILE_PATH = "hawkular.yaml";
 
-    private HawkularFactory() {
+    private final HawkularClientConfig config;
+
+    private HawkularFactory(HawkularClientConfig config) {
+        this.config = config;
     }
 
-    private static HawkularYamlConfig load(String filename) {
+    /**
+     * Initialize the factory with default config file.<br/>
+     * First, it will look for YAML file path given by system property "hawkular.java.toolbox.config"<br/>
+     * If not found, it looks for "hawkular.yaml" from current working dir<br/>
+     * Or finally, loads a default, unconfigured Hawkular client config
+     */
+    public static HawkularFactory load() {
+        return new HawkularFactory(loadConfig(Optional.ofNullable(System.getProperty(PROPKEY_CONFIG_FILE))));
+    }
+
+    /**
+     * Initialize the factory with the input YAML config file.<br/>
+     * If not found, loads a default, unconfigured Hawkular client config
+     */
+    public static HawkularFactory loadFrom(String configFilePath) {
+        return new HawkularFactory(loadConfig(Optional.of(configFilePath)));
+    }
+
+    private static HawkularYamlConfig loadConfig(Optional<String> filepath) {
         try {
+            File configFile = findConfigurationFile(filepath);
+            if (configFile == null) {
+                LOG.warn("Configuration file not found");
+                return loadUnconfigured();
+            }
             Yaml yaml = new Yaml(new Constructor(HawkularYamlConfig.class));
-            InputStream input = new FileInputStream(new File(filename));
+            InputStream input = new FileInputStream(configFile);
             return (HawkularYamlConfig) yaml.load(input);
         } catch (IOException e) {
             LOG.error("Could not read Yaml config: ", e);
-            HawkularYamlConfig defaultConfig = new HawkularYamlConfig();
-            defaultConfig.setTenant("unconfigured");
-            return defaultConfig;
+            return loadUnconfigured();
         }
     }
 
-    public static HawkularLogger logger(Class<?> clazz) {
-        return logger(clazz.getName());
+    private static HawkularYamlConfig loadUnconfigured() {
+        HawkularYamlConfig defaultConfig = new HawkularYamlConfig();
+        defaultConfig.setTenant("unconfigured");
+        return defaultConfig;
     }
 
-    public static HawkularLogger logger(String owner) {
-        return HawkularClientBuilder.fromConfig(CONFIG)
-                .addGlobalTag("owner", owner)
-                .prefixedWith(owner + ".")
-                .buildLogger();
+    private static File findConfigurationFile(Optional<String> filepath) throws IOException {
+        File file = new File(filepath.orElse(DEFAULT_FILE_PATH));
+        if (!filepath.isPresent() && !file.exists()) {
+            return null;
+        }
+        if (!file.isFile()) {
+            throw new IOException(file + " is not a regular file");
+        }
+        if (!file.canRead()) {
+            throw new IOException(file + " is not readable");
+        }
+        return file;
     }
 
-    public static HawkularClient create() {
-        return HawkularClientBuilder.fromConfig(CONFIG).build();
+    /**
+     * Creates an Hawkular logger for the input class. Each log affects the following metrics:<br/>
+     *     <ul>
+     *         <li><i>[class name].[debug|info|warning|error].count</i>, counts the number of occurrences</li>
+     *         <li><i>[class name].[debug|info|warning|error].timeline</i>, a String metric that stores the message</li>
+     *     </ul>
+     *     All metrics have the following tags: <br/>
+     *     <ul>
+     *         <li>class: [class full name]</li>
+     *         <li>severity: [debug|info|warning|error]</li>
+     *     </ul>
+     * @param clazz related class
+     * @return the logger
+     */
+    public HawkularLogger logger(Class<?> clazz) {
+        return HawkularClientBuilder.fromConfig(config).buildLogger(clazz);
     }
 
-    public static HawkularClientBuilder builder() {
-        return HawkularClientBuilder.fromConfig(CONFIG);
+    /**
+     * Creates an Hawkular logger for the input source. Each log affects the following metrics:<br/>
+     *     <ul>
+     *         <li><i>[input source].[debug|info|warning|error].count</i>, counts the number of occurrences</li>
+     *         <li><i>[input source].[debug|info|warning|error].timeline</i>, a String metric that stores the message</li>
+     *     </ul>
+     *     All metrics have the following tags: <br/>
+     *     <ul>
+     *         <li>source: [input source]</li>
+     *         <li>severity: [debug|info|warning|error]</li>
+     *     </ul>
+     * @param source the source name
+     * @return the logger
+     */
+    public HawkularLogger logger(String source) {
+        return HawkularClientBuilder.fromConfig(config).buildLogger(source);
+    }
+
+    /**
+     * Creates an {@link HawkularClient} instance, using the relevant configuration
+     * @return a new {@link HawkularClient}
+     */
+    public HawkularClient create() {
+        return HawkularClientBuilder.fromConfig(config).build();
+    }
+
+    /**
+     * Creates an {@link HawkularClient} builder, pre-configured using the relevant configuration.
+     * This builder can be used to override the default configuration and build a new {@link HawkularClient}.
+     * @return an {@link HawkularClientBuilder}
+     */
+    public HawkularClientBuilder builder() {
+        return HawkularClientBuilder.fromConfig(config);
     }
 }

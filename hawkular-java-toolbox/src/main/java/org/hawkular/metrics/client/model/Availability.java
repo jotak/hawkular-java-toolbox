@@ -20,5 +20,5 @@ package org.hawkular.metrics.client.model;
  * @author Joel Takvorian
  */
 public enum Availability {
-    UP, DOWN, UNKNOWN, ADMIN
+    UP, DOWN, UNKNOWN
 }

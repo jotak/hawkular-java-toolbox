@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.hawkular.metrics.client.common.http.HawkularHttpClient;
 import org.hawkular.metrics.client.config.HawkularClientInfo;
-import org.hawkular.metrics.client.config.RegexTags;
 import org.hawkular.metrics.client.model.Metric;
 
 /**

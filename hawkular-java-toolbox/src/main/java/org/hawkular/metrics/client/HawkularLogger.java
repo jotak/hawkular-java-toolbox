@@ -33,76 +33,148 @@ public class HawkularLogger {
         this.inst = inst;
     }
 
+    /**
+     * Log {@code message} with DEBUG level on timeline, and increase related counter
+     * @param message the message logged on timeline
+     */
     public void debug(String message) {
         debug(message, null);
     }
 
+    /**
+     * Log {@code message} with DEBUG level on timeline, and increase related counter
+     * @param message the message logged on timeline
+     * @param dpTags datapoint tags to associate with this log
+     */
     public void debug(String message, Map<String, String> dpTags) {
-        inst.counter("debug.count", MAP_SEVERITY_DEBUG).inc();
+        inst.counter("debug.count", MAP_SEVERITY_DEBUG).inc(dpTags);
         inst.timeline("debug.timeline", MAP_SEVERITY_DEBUG).set(message, dpTags);
     }
 
+    /**
+     * Log an exception with DEBUG level on timeline, and increase related counter
+     * @param t the exception / throwable
+     */
     public void debug(Throwable t) {
         debug(throwableToString(t), Collections.singletonMap("class", t.getClass().getName()));
     }
 
+    /**
+     * Log an exception with DEBUG level on timeline, and increase related counter
+     * @param t the exception / throwable
+     * @param dpTags datapoint tags to associate with this log
+     */
     public void debug(Throwable t, Map<String, String> dpTags) {
         Map<String, String> allDpTags = new HashMap<>(dpTags);
         allDpTags.put("class", t.getClass().getName());
         debug(throwableToString(t), allDpTags);
     }
 
+    /**
+     * Log {@code message} with INFO level on timeline, and increase related counter
+     * @param message the message logged on timeline
+     */
     public void info(String message) {
         info(message, null);
     }
 
+    /**
+     * Log {@code message} with INFO level on timeline, and increase related counter
+     * @param message the message logged on timeline
+     * @param dpTags datapoint tags to associate with this log
+     */
     public void info(String message, Map<String, String> dpTags) {
-        inst.counter("info.count", MAP_SEVERITY_INFO).inc();
+        inst.counter("info.count", MAP_SEVERITY_INFO).inc(dpTags);
         inst.timeline("info.timeline", MAP_SEVERITY_INFO).set(message, dpTags);
     }
 
+    /**
+     * Log an exception with INFO level on timeline, and increase related counter
+     * @param t the exception / throwable
+     */
     public void info(Throwable t) {
         info(throwableToString(t), Collections.singletonMap("class", t.getClass().getName()));
     }
 
+    /**
+     * Log an exception with INFO level on timeline, and increase related counter
+     * @param t the exception / throwable
+     * @param dpTags datapoint tags to associate with this log
+     */
     public void info(Throwable t, Map<String, String> dpTags) {
         Map<String, String> allDpTags = new HashMap<>(dpTags);
         allDpTags.put("class", t.getClass().getName());
         info(throwableToString(t), allDpTags);
     }
 
+    /**
+     * Log {@code message} with WARNING level on timeline, and increase related counter
+     * @param message the message logged on timeline
+     */
     public void warn(String message) {
         warn(message, null);
     }
 
+    /**
+     * Log {@code message} with WARNING level on timeline, and increase related counter
+     * @param message the message logged on timeline
+     * @param dpTags datapoint tags to associate with this log
+     */
     public void warn(String message, Map<String, String> dpTags) {
-        inst.counter("warning.count", MAP_SEVERITY_WARNING).inc();
+        inst.counter("warning.count", MAP_SEVERITY_WARNING).inc(dpTags);
         inst.timeline("warning.timeline", MAP_SEVERITY_WARNING).set(message, dpTags);
     }
 
+    /**
+     * Log an exception with WARNING level on timeline, and increase related counter
+     * @param t the exception / throwable
+     */
     public void warn(Throwable t) {
         warn(throwableToString(t), Collections.singletonMap("class", t.getClass().getName()));
     }
 
+    /**
+     * Log an exception with WARNING level on timeline, and increase related counter
+     * @param t the exception / throwable
+     * @param dpTags datapoint tags to associate with this log
+     */
     public void warn(Throwable t, Map<String, String> dpTags) {
         Map<String, String> allDpTags = new HashMap<>(dpTags);
         allDpTags.put("class", t.getClass().getName());
         warn(throwableToString(t), allDpTags);
     }
 
+    /**
+     * Log {@code message} with ERROR level on timeline, and increase related counter
+     * @param message the message logged on timeline
+     */
     public void error(String message) {
         error(message, null);
     }
 
+    /**
+     * Log {@code message} with ERROR level on timeline, and increase related counter
+     * @param message the message logged on timeline
+     * @param dpTags datapoint tags to associate with this log
+     */
     public void error(String message, Map<String, String> dpTags) {
-        inst.counter("error.count", MAP_SEVERITY_ERROR).inc();
+        inst.counter("error.count", MAP_SEVERITY_ERROR).inc(dpTags);
         inst.timeline("error.timeline", MAP_SEVERITY_ERROR).set(message, dpTags);
     }
 
+    /**
+     * Log an exception with ERROR level on timeline, and increase related counter
+     * @param t the exception / throwable
+     */
     public void error(Throwable t) {
         error(throwableToString(t), Collections.singletonMap("class", t.getClass().getName()));
     }
 
+    /**
+     * Log an exception with ERROR level on timeline, and increase related counter
+     * @param t the exception / throwable
+     * @param dpTags datapoint tags to associate with this log
+     */
     public void error(Throwable t, Map<String, String> dpTags) {
         Map<String, String> allDpTags = new HashMap<>(dpTags);
         allDpTags.put("class", t.getClass().getName());
@@ -112,7 +184,7 @@ public class HawkularLogger {
     private static String throwableToString(Throwable t) {
         StringBuilder sb = new StringBuilder(t.getClass().getName());
         if (t.getMessage() != null) {
-            sb.append(t.getMessage());
+            sb.append(": ").append(t.getMessage());
         }
         return sb.toString();
     }

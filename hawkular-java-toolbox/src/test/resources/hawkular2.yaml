@@ -15,4 +15,10 @@
 # limitations under the License.
 #
 
-tenant: toto
+tenant: darius
+prefix: ${host}.
+perMetricTags:
+  guava.cache.read:
+    impl: guava
+  /ehcache\..*/:
+    impl: ehcache
