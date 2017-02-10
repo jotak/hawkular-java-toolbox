@@ -34,25 +34,25 @@ public class HawkularLogger {
     }
 
     /**
-     * Log {@code message} with DEBUG level on timeline, and increase related counter
-     * @param message the message logged on timeline
+     * Log {@code message} with DEBUG level on logs, and increase related counter
+     * @param message the message logged on logs
      */
     public void debug(String message) {
         debug(message, null);
     }
 
     /**
-     * Log {@code message} with DEBUG level on timeline, and increase related counter
-     * @param message the message logged on timeline
+     * Log {@code message} with DEBUG level on logs, and increase related counter
+     * @param message the message logged on logs
      * @param dpTags datapoint tags to associate with this log
      */
     public void debug(String message, Map<String, String> dpTags) {
         inst.counter("debug.count", MAP_SEVERITY_DEBUG).inc(dpTags);
-        inst.timeline("debug.timeline", MAP_SEVERITY_DEBUG).set(message, dpTags);
+        inst.logger("debug.logs", MAP_SEVERITY_DEBUG).log(message, dpTags);
     }
 
     /**
-     * Log an exception with DEBUG level on timeline, and increase related counter
+     * Log an exception with DEBUG level on logs, and increase related counter
      * @param t the exception / throwable
      */
     public void debug(Throwable t) {
@@ -60,7 +60,7 @@ public class HawkularLogger {
     }
 
     /**
-     * Log an exception with DEBUG level on timeline, and increase related counter
+     * Log an exception with DEBUG level on logs, and increase related counter
      * @param t the exception / throwable
      * @param dpTags datapoint tags to associate with this log
      */
@@ -71,25 +71,25 @@ public class HawkularLogger {
     }
 
     /**
-     * Log {@code message} with INFO level on timeline, and increase related counter
-     * @param message the message logged on timeline
+     * Log {@code message} with INFO level on logs, and increase related counter
+     * @param message the message logged on logs
      */
     public void info(String message) {
         info(message, null);
     }
 
     /**
-     * Log {@code message} with INFO level on timeline, and increase related counter
-     * @param message the message logged on timeline
+     * Log {@code message} with INFO level on logs, and increase related counter
+     * @param message the message logged on logs
      * @param dpTags datapoint tags to associate with this log
      */
     public void info(String message, Map<String, String> dpTags) {
         inst.counter("info.count", MAP_SEVERITY_INFO).inc(dpTags);
-        inst.timeline("info.timeline", MAP_SEVERITY_INFO).set(message, dpTags);
+        inst.logger("info.logs", MAP_SEVERITY_INFO).log(message, dpTags);
     }
 
     /**
-     * Log an exception with INFO level on timeline, and increase related counter
+     * Log an exception with INFO level on logs, and increase related counter
      * @param t the exception / throwable
      */
     public void info(Throwable t) {
@@ -97,7 +97,7 @@ public class HawkularLogger {
     }
 
     /**
-     * Log an exception with INFO level on timeline, and increase related counter
+     * Log an exception with INFO level on logs, and increase related counter
      * @param t the exception / throwable
      * @param dpTags datapoint tags to associate with this log
      */
@@ -108,25 +108,25 @@ public class HawkularLogger {
     }
 
     /**
-     * Log {@code message} with WARNING level on timeline, and increase related counter
-     * @param message the message logged on timeline
+     * Log {@code message} with WARNING level on logs, and increase related counter
+     * @param message the message logged on logs
      */
     public void warn(String message) {
         warn(message, null);
     }
 
     /**
-     * Log {@code message} with WARNING level on timeline, and increase related counter
-     * @param message the message logged on timeline
+     * Log {@code message} with WARNING level on logs, and increase related counter
+     * @param message the message logged on logs
      * @param dpTags datapoint tags to associate with this log
      */
     public void warn(String message, Map<String, String> dpTags) {
         inst.counter("warning.count", MAP_SEVERITY_WARNING).inc(dpTags);
-        inst.timeline("warning.timeline", MAP_SEVERITY_WARNING).set(message, dpTags);
+        inst.logger("warning.logs", MAP_SEVERITY_WARNING).log(message, dpTags);
     }
 
     /**
-     * Log an exception with WARNING level on timeline, and increase related counter
+     * Log an exception with WARNING level on logs, and increase related counter
      * @param t the exception / throwable
      */
     public void warn(Throwable t) {
@@ -134,7 +134,7 @@ public class HawkularLogger {
     }
 
     /**
-     * Log an exception with WARNING level on timeline, and increase related counter
+     * Log an exception with WARNING level on logs, and increase related counter
      * @param t the exception / throwable
      * @param dpTags datapoint tags to associate with this log
      */
@@ -145,25 +145,25 @@ public class HawkularLogger {
     }
 
     /**
-     * Log {@code message} with ERROR level on timeline, and increase related counter
-     * @param message the message logged on timeline
+     * Log {@code message} with ERROR level on logs, and increase related counter
+     * @param message the message logged on logs
      */
     public void error(String message) {
         error(message, null);
     }
 
     /**
-     * Log {@code message} with ERROR level on timeline, and increase related counter
-     * @param message the message logged on timeline
+     * Log {@code message} with ERROR level on logs, and increase related counter
+     * @param message the message logged on logs
      * @param dpTags datapoint tags to associate with this log
      */
     public void error(String message, Map<String, String> dpTags) {
         inst.counter("error.count", MAP_SEVERITY_ERROR).inc(dpTags);
-        inst.timeline("error.timeline", MAP_SEVERITY_ERROR).set(message, dpTags);
+        inst.logger("error.logs", MAP_SEVERITY_ERROR).log(message, dpTags);
     }
 
     /**
-     * Log an exception with ERROR level on timeline, and increase related counter
+     * Log an exception with ERROR level on logs, and increase related counter
      * @param t the exception / throwable
      */
     public void error(Throwable t) {
@@ -171,7 +171,7 @@ public class HawkularLogger {
     }
 
     /**
-     * Log an exception with ERROR level on timeline, and increase related counter
+     * Log an exception with ERROR level on logs, and increase related counter
      * @param t the exception / throwable
      * @param dpTags datapoint tags to associate with this log
      */

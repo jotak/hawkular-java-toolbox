@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.hawkular.metrics.client.model.AvailabilityMetric;
 import org.hawkular.metrics.client.model.Counter;
 import org.hawkular.metrics.client.model.Gauge;
-import org.hawkular.metrics.client.model.Timeline;
+import org.hawkular.metrics.client.model.Logger;
 import org.hawkular.metrics.client.model.Watch;
 import org.junit.Test;
 
@@ -33,25 +33,25 @@ public class MetricBuilderTest {
     private final HttpClientMock client = new HttpClientMock();
 
     @Test
-    public void shouldCreateTimeline() {
+    public void shouldCreateLog() {
         HawkularClient hwk = HawkularFactory.load().builder()
                 .useHttpClient(uri -> client)
                 .build();
-        Timeline timeline = hwk.metricBuilder()
+        Logger log = hwk.metricBuilder()
                 .addSegment("movie", "2001")
                 .addSegment("character", "hal")
-                .addSegment("metric", "timeline")
+                .addSegment("metric", "logs")
                 .addTag("type", "AI")
-                .toTimeline();
+                .toLogger();
 
-        assertThat(timeline.getName()).isEqualTo("2001.hal.timeline");
+        assertThat(log.getName()).isEqualTo("2001.hal.logs");
         assertThat(client.getMetricsRestCalls()).isEmpty();
         assertThat(client.getTagsRestCalls()).hasSize(1);
-        assertThat(client.getTagsRestCalls().get(0).resource).isEqualTo("/strings/2001.hal.timeline/tags");
+        assertThat(client.getTagsRestCalls().get(0).resource).isEqualTo("/strings/2001.hal.logs/tags");
         assertThat(client.getTagsRestCalls().get(0).body).contains("\"character\":\"hal\"")
                 .contains("\"movie\":\"2001\"")
                 .contains("\"type\":\"AI\"")
-                .contains("\"metric\":\"timeline\"");
+                .contains("\"metric\":\"logs\"");
     }
 
     @Test

@@ -159,7 +159,7 @@ public class HawkularFactory {
      * Creates an Hawkular logger for the input class. Each log affects the following metrics:<br/>
      *     <ul>
      *         <li><i>[class name].[debug|info|warning|error].count</i>, counts the number of occurrences</li>
-     *         <li><i>[class name].[debug|info|warning|error].timeline</i>, a String metric that stores the message</li>
+     *         <li><i>[class name].[debug|info|warning|error].logs</i>, a String metric that stores the message</li>
      *     </ul>
      *     All metrics have the following tags: <br/>
      *     <ul>
@@ -177,7 +177,7 @@ public class HawkularFactory {
      * Creates an Hawkular logger for the input source. Each log affects the following metrics:<br/>
      *     <ul>
      *         <li><i>[input source].[debug|info|warning|error].count</i>, counts the number of occurrences</li>
-     *         <li><i>[input source].[debug|info|warning|error].timeline</i>, a String metric that stores the message</li>
+     *         <li><i>[input source].[debug|info|warning|error].logs</i>, a String metric that stores the message</li>
      *     </ul>
      *     All metrics have the following tags: <br/>
      *     <ul>

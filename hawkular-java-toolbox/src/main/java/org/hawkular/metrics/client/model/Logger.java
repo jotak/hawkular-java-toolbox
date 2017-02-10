@@ -21,17 +21,17 @@ import java.util.Map;
 /**
  * @author Joel Takvorian
  */
-public class Timeline extends Metric {
+public class Logger extends Metric {
 
-    public Timeline(String name, MetricChangeListener listener) {
+    public Logger(String name, MetricChangeListener listener) {
         super("strings", name, listener);
     }
 
-    public void set(String value) {
+    public void log(String value) {
         listener.onChanged(this, DataPoint.stringDataPoint(System.currentTimeMillis(), value));
     }
 
-    public void set(String value, Map<String, String> tags) {
+    public void log(String value, Map<String, String> tags) {
         listener.onChanged(this, DataPoint.stringDataPoint(System.currentTimeMillis(), value, tags));
     }
 }

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import org.hawkular.metrics.client.model.AvailabilityMetric;
 import org.hawkular.metrics.client.model.Counter;
 import org.hawkular.metrics.client.model.Gauge;
-import org.hawkular.metrics.client.model.Timeline;
+import org.hawkular.metrics.client.model.Logger;
 import org.hawkular.metrics.client.model.Watch;
 
 /**
@@ -77,7 +77,7 @@ public class MetricBuilder {
         return hawkularClient.availability(buildName(), tags);
     }
 
-    public Timeline toTimeline() {
-        return hawkularClient.timeline(buildName(), tags);
+    public Logger toLogger() {
+        return hawkularClient.logger(buildName(), tags);
     }
 }

@@ -26,9 +26,9 @@ import org.hawkular.metrics.client.config.HawkularClientInfo;
 import org.hawkular.metrics.client.model.AvailabilityMetric;
 import org.hawkular.metrics.client.model.Counter;
 import org.hawkular.metrics.client.model.Gauge;
+import org.hawkular.metrics.client.model.Logger;
 import org.hawkular.metrics.client.model.Metric;
 import org.hawkular.metrics.client.model.MetricChangeListener;
-import org.hawkular.metrics.client.model.Timeline;
 import org.hawkular.metrics.client.model.Watch;
 import org.hawkular.metrics.client.monitor.MonitoringSession;
 
@@ -45,7 +45,7 @@ public class HawkularClient {
     private final Map<String, Gauge> gauges = new HashMap<>();
     private final Map<String, Watch> watches = new HashMap<>();
     private final Map<String, AvailabilityMetric> avails = new HashMap<>();
-    private final Map<String, Timeline> timelines = new HashMap<>();
+    private final Map<String, Logger> loggers = new HashMap<>();
 
     /**
      * Use {@link HawkularFactory} or {@link HawkularClientBuilder} for public construction
@@ -127,17 +127,17 @@ public class HawkularClient {
     }
 
     /**
-     * Create a new {@link Timeline} with the given name
+     * Create a new {@link Logger} with the given name
      */
-    public Timeline timeline(String name) {
-        return metric(name, Collections.emptyMap(), timelines, Timeline::new);
+    public Logger logger(String name) {
+        return metric(name, Collections.emptyMap(), loggers, Logger::new);
     }
 
     /**
-     * Create a new {@link Timeline} with the given name and tags
+     * Create a new {@link Logger} with the given name and tags
      */
-    public Timeline timeline(String name, Map<String, String> tags) {
-        return metric(name, tags, timelines, Timeline::new);
+    public Logger logger(String name, Map<String, String> tags) {
+        return metric(name, tags, loggers, Logger::new);
     }
 
     public MonitoringSession.Builder prepareMonitoringSession(long frequency, TimeUnit timeUnit) {

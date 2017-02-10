@@ -47,7 +47,7 @@ public class HawkularLoggerTest {
                     "/counters/2001.hal.error.count/tags",
                     "{\"source\":\"2001.hal\",\"severity\":\"error\"}"),
                 new HttpClientMock.TagsData(
-                    "/strings/2001.hal.error.timeline/tags",
+                    "/strings/2001.hal.error.logs/tags",
                     "{\"source\":\"2001.hal\",\"severity\":\"error\"}"));
     }
 
@@ -67,7 +67,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.error.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"error\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.error.timeline/tags",
+                        "/strings/2001.hal.error.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"error\"}"));
     }
 
@@ -88,7 +88,7 @@ public class HawkularLoggerTest {
                     "/counters/2001.hal.error.count/tags",
                     "{\"source\":\"2001.hal\",\"severity\":\"error\"}"),
                 new HttpClientMock.TagsData(
-                    "/strings/2001.hal.error.timeline/tags",
+                    "/strings/2001.hal.error.logs/tags",
                     "{\"source\":\"2001.hal\",\"severity\":\"error\"}"));
     }
 
@@ -111,7 +111,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.error.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"error\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.error.timeline/tags",
+                        "/strings/2001.hal.error.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"error\"}"));
     }
 
@@ -129,7 +129,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.warning.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"warning\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.warning.timeline/tags",
+                        "/strings/2001.hal.warning.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"warning\"}"));
     }
 
@@ -149,7 +149,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.warning.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"warning\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.warning.timeline/tags",
+                        "/strings/2001.hal.warning.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"warning\"}"));
     }
 
@@ -170,7 +170,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.warning.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"warning\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.warning.timeline/tags",
+                        "/strings/2001.hal.warning.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"warning\"}"));
     }
 
@@ -193,7 +193,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.warning.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"warning\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.warning.timeline/tags",
+                        "/strings/2001.hal.warning.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"warning\"}"));
     }
 
@@ -211,7 +211,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.info.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"info\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.info.timeline/tags",
+                        "/strings/2001.hal.info.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"info\"}"));
     }
 
@@ -231,7 +231,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.info.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"info\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.info.timeline/tags",
+                        "/strings/2001.hal.info.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"info\"}"));
     }
 
@@ -252,7 +252,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.info.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"info\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.info.timeline/tags",
+                        "/strings/2001.hal.info.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"info\"}"));
     }
 
@@ -275,7 +275,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.info.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"info\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.info.timeline/tags",
+                        "/strings/2001.hal.info.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"info\"}"));
     }
 
@@ -293,7 +293,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.debug.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"debug\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.debug.timeline/tags",
+                        "/strings/2001.hal.debug.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"debug\"}"));
     }
 
@@ -313,7 +313,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.debug.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"debug\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.debug.timeline/tags",
+                        "/strings/2001.hal.debug.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"debug\"}"));
     }
 
@@ -334,7 +334,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.debug.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"debug\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.debug.timeline/tags",
+                        "/strings/2001.hal.debug.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"debug\"}"));
     }
 
@@ -357,7 +357,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.debug.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"debug\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.debug.timeline/tags",
+                        "/strings/2001.hal.debug.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"debug\"}"));
     }
 
@@ -380,7 +380,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.error.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"error\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.error.timeline/tags",
+                        "/strings/2001.hal.error.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"error\"}"));
 
         client.clear();
@@ -403,7 +403,7 @@ public class HawkularLoggerTest {
                         "/counters/2001.hal.warning.count/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"warning\"}"),
                 new HttpClientMock.TagsData(
-                        "/strings/2001.hal.warning.timeline/tags",
+                        "/strings/2001.hal.warning.logs/tags",
                         "{\"source\":\"2001.hal\",\"severity\":\"warning\"}"));
     }
 
@@ -438,7 +438,7 @@ public class HawkularLoggerTest {
         JSONArray stringsJson = metrics.getJSONArray("strings");
         assertThat(stringsJson).hasSize(1);
         JSONObject stringJson = stringsJson.getJSONObject(0);
-        assertThat(stringJson.getString("id")).isEqualTo(metricNameBase + ".timeline");
+        assertThat(stringJson.getString("id")).isEqualTo(metricNameBase + ".logs");
         JSONObject datapoint = stringJson.getJSONArray("dataPoints").getJSONObject(0);
         assertThat(datapoint.getString("value")).isEqualTo(sentence);
         if (tags.isEmpty()) {

@@ -25,7 +25,7 @@ import java.util.function.Function;
 import org.hawkular.metrics.client.model.AvailabilityMetric;
 import org.hawkular.metrics.client.model.Counter;
 import org.hawkular.metrics.client.model.Gauge;
-import org.hawkular.metrics.client.model.Timeline;
+import org.hawkular.metrics.client.model.Logger;
 import org.hawkular.metrics.client.model.Watch;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,22 +39,22 @@ public class HawkularClientTest {
     private final HttpClientMock client = new HttpClientMock();
 
     @Test
-    public void shouldFeedTimeline() {
+    public void shouldFeedLogger() {
         HawkularClient hwk = HawkularFactory.load().builder()
                 .useHttpClient(uri -> client)
                 .build();
-        Timeline timeline = hwk.timeline("2001.hal.timeline");
+        Logger logger = hwk.logger("2001.hal.log");
 
-        assertThat(timeline.getName()).isEqualTo("2001.hal.timeline");
+        assertThat(logger.getName()).isEqualTo("2001.hal.log");
         assertThat(client.getMetricsRestCalls()).isEmpty();
         assertThat(client.getTagsRestCalls()).hasSize(0);
 
-        timeline.set("I'm sorry, Dave. I'm afraid I can't do that.");
+        logger.log("I'm sorry, Dave. I'm afraid I can't do that.");
 
         assertThat(client.getMetricsRestCalls()).hasSize(1);
         assertSingleValue(new JSONObject(client.getMetricsRestCalls().get(0)),
                 "strings",
-                "2001.hal.timeline",
+                "2001.hal.log",
                 "I'm sorry, Dave. I'm afraid I can't do that.",
                 json -> json.getString("value"),
                 Collections.emptyMap());
