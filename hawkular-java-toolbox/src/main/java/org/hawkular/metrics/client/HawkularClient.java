@@ -30,6 +30,7 @@ import org.hawkular.metrics.client.model.Metric;
 import org.hawkular.metrics.client.model.MetricChangeListener;
 import org.hawkular.metrics.client.model.Timeline;
 import org.hawkular.metrics.client.model.Watch;
+import org.hawkular.metrics.client.monitor.MonitoringSession;
 
 /**
  * Toolbox' Hawkular client that allows various operations related to an Hawkular server.<br/>
@@ -56,7 +57,8 @@ public class HawkularClient {
     }
 
     private <T extends Metric> T metric(String name,
-                                        Map<String, String> tags, Map<String, T> pool,
+                                        Map<String, String> tags,
+                                        Map<String, T> pool,
                                         BiFunction<String, MetricChangeListener, T> factory) {
         String fullname = info.getPrefix().map(p -> p + name).orElse(name);
         if (pool.containsKey(fullname)) {

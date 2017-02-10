@@ -14,16 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.metrics.client;
+package org.hawkular.metrics.client.monitor;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hawkular.metrics.client.HawkularClient;
 import org.hawkular.metrics.client.model.Gauge;
 
 import com.sun.management.OperatingSystemMXBean;
@@ -35,12 +37,8 @@ public class MemoryMonitoring implements MonitoringSession.FeederSet {
 
     private final Map<String, String> tags;
 
-    public MemoryMonitoring(Map<String, String> tags) {
+    private MemoryMonitoring(Map<String, String> tags) {
         this.tags = tags;
-    }
-
-    public MemoryMonitoring() {
-        this(Collections.emptyMap());
     }
 
     @Override
@@ -55,5 +53,38 @@ public class MemoryMonitoring implements MonitoringSession.FeederSet {
         Gauge procHeap = sessionBox.gauge("monitor.memory.process.heap", tags);
         feeds.add(() -> procHeap.set(memoryUsage.getUsed()));
         return feeds;
+    }
+
+    public static MemoryMonitoring create() {
+        return new MemoryMonitoring(Collections.emptyMap());
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private Map<String, String> tags = new HashMap<>();
+
+        private Builder() {
+        }
+
+        public Builder disableAutoTagging() {
+            return this;
+        }
+
+        public Builder withTags(Map<String, String> tags) {
+            this.tags.putAll(tags);
+            return this;
+        }
+
+        public Builder withTag(String key, String value) {
+            this.tags.put(key, value);
+            return this;
+        }
+
+        public MemoryMonitoring build() {
+            return new MemoryMonitoring(tags);
+        }
     }
 }

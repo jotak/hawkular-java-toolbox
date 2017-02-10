@@ -22,11 +22,9 @@ import java.util.Map;
  * @author Joel Takvorian
  */
 public class AvailabilityMetric extends Metric {
-    private final MetricChangeListener listener;
 
     public AvailabilityMetric(String name, MetricChangeListener listener) {
-        super("availability", name);
-        this.listener = listener;
+        super("availability", name, listener);
     }
 
     public void up() {

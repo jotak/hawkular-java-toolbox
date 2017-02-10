@@ -24,11 +24,9 @@ import java.util.concurrent.atomic.LongAdder;
  */
 public class Counter extends Metric {
     private LongAdder count = new LongAdder();
-    private final MetricChangeListener listener;
 
     public Counter(String name, MetricChangeListener listener) {
-        super("counters", name);
-        this.listener = listener;
+        super("counters", name, listener);
     }
 
     public void inc() {

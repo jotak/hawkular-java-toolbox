@@ -22,11 +22,9 @@ import java.util.Map;
  * @author Joel Takvorian
  */
 public class Timeline extends Metric {
-    private final MetricChangeListener listener;
 
     public Timeline(String name, MetricChangeListener listener) {
-        super("strings", name);
-        this.listener = listener;
+        super("strings", name, listener);
     }
 
     public void set(String value) {

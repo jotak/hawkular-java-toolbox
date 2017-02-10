@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.metrics.client;
+package org.hawkular.metrics.client.monitor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import org.hawkular.metrics.client.HawkularClient;
 
 /**
  * @author Joel Takvorian

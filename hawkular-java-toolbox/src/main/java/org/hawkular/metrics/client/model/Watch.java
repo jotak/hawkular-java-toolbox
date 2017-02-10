@@ -23,12 +23,10 @@ import java.util.Map;
  */
 public class Watch extends Metric {
 
-    private final MetricChangeListener listener;
     private long timestamp;
 
     public Watch(String name, MetricChangeListener listener) {
-        super("gauges", name);
-        this.listener = listener;
+        super("gauges", name, listener);
         reset();
     }
 

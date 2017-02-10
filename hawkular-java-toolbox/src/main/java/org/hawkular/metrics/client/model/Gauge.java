@@ -22,11 +22,9 @@ import java.util.Map;
  * @author Joel Takvorian
  */
 public class Gauge extends Metric {
-    private final MetricChangeListener listener;
 
     public Gauge(String name, MetricChangeListener listener) {
-        super("gauges", name);
-        this.listener = listener;
+        super("gauges", name, listener);
     }
 
     public void set(double value) {

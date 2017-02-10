@@ -16,16 +16,20 @@
  */
 package org.hawkular.metrics.client.model;
 
+import java.util.Map;
+
 /**
  * @author Joel Takvorian
  */
 public class Metric {
     private final String hawkularType;
     private final String name;
+    final MetricChangeListener listener;
 
-    public Metric(String hawkularType, String name) {
+    public Metric(String hawkularType, String name, MetricChangeListener listener) {
         this.hawkularType = hawkularType;
         this.name = name;
+        this.listener = listener;
     }
 
     public String getHawkularType() {
@@ -34,5 +38,9 @@ public class Metric {
 
     public String getName() {
         return name;
+    }
+
+    public void tag(Map<String, String> tags) {
+        listener.tag(this, tags);
     }
 }

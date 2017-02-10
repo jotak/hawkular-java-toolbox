@@ -16,9 +16,12 @@
  */
 package org.hawkular.metrics.client.model;
 
+import java.util.Map;
+
 /**
  * @author Joel Takvorian
  */
 public interface MetricChangeListener {
     void onChanged(Metric metric, DataPoint<?> dp);
+    void tag(Metric metric, Map<String, String> tags);
 }

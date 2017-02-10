@@ -16,6 +16,8 @@
  */
 package org.hawkular.metrics.client;
 
+import java.util.Map;
+
 import org.hawkular.metrics.client.common.http.HawkularHttpClient;
 import org.hawkular.metrics.client.config.HawkularClientInfo;
 import org.hawkular.metrics.client.model.DataPoint;
@@ -33,5 +35,9 @@ public class MetricsNotifier implements MetricChangeListener {
 
     @Override public void onChanged(Metric metric, DataPoint<?> dp) {
         hawkularClient.postMetrics(HawkularJson.metricToString(metric, dp));
+    }
+
+    @Override public void tag(Metric metric, Map<String, String> tags) {
+        hawkularClient.putTags(metric.getHawkularType(), metric.getName(), HawkularJson.tagsToString(tags));
     }
 }
