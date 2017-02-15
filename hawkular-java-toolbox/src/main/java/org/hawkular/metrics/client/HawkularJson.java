@@ -16,14 +16,13 @@
  */
 package org.hawkular.metrics.client;
 
-import java.util.Map;
-
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 import org.hawkular.metrics.client.model.DataPoint;
 import org.hawkular.metrics.client.model.Metric;
+import org.hawkular.metrics.client.model.Tags;
 
 /**
  * Some Json utility for Hawkular data model
@@ -42,9 +41,9 @@ public final class HawkularJson {
                 .toString();
     }
 
-    public static String tagsToString(Map<String, String> tags) {
+    public static String tagsToString(Tags tags) {
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
-        tags.forEach(jsonObjectBuilder::add);
+        tags.forEachPresent(jsonObjectBuilder::add);
         return jsonObjectBuilder.build().toString();
     }
 

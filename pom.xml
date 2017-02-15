@@ -31,12 +31,13 @@
   <version>0.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>Hawkular Java Toolbox</name>
+  <name>Hawkular Java Toolbox (parent)</name>
   <description>A java client library for Hawkular</description>
 
   <modules>
     <module>hawkular-java-toolbox</module>
     <module>dropwizard-binder</module>
+    <module>grafana</module>
   </modules>
 
   <url>http://www.hawkular.org/</url>

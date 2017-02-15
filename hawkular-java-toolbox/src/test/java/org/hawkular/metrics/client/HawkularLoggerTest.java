@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hawkular.metrics.client.model.Tag;
+import org.hawkular.metrics.client.model.Tags;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -77,12 +79,10 @@ public class HawkularLoggerTest {
                 .builder()
                 .useHttpClient(uri -> client)
                 .buildLogger("2001.hal");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("t1", "v1");
-        tags.put("t2", "v2");
+        Tags tags = Tags.from(Tag.keyValue("t1", "v1"), Tag.keyValue("t2", "v2"));
         logger.error("I'm sorry, Dave. I'm afraid I can't do that.", tags);
 
-        assertSingleLog("2001.hal.error", "I'm sorry, Dave. I'm afraid I can't do that.", tags);
+        assertSingleLog("2001.hal.error", "I'm sorry, Dave. I'm afraid I can't do that.", tags.toPresentMap());
         assertThat(client.getTagsRestCalls()).containsOnly(
                 new HttpClientMock.TagsData(
                     "/counters/2001.hal.error.count/tags",
@@ -98,12 +98,10 @@ public class HawkularLoggerTest {
                 .builder()
                 .useHttpClient(uri -> client)
                 .buildLogger("2001.hal");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("t1", "v1");
-        tags.put("t2", "v2");
+        Tags tags = Tags.from(Tag.keyValue("t1", "v1"), Tag.keyValue("t2", "v2"));
         logger.error(new IllegalStateException("I'm sorry, Dave. I'm afraid I can't do that."), tags);
 
-        Map<String, String> expectedTags = new HashMap<>(tags);
+        Map<String, String> expectedTags = tags.toPresentMap();
         expectedTags.put("class", "java.lang.IllegalStateException");
         assertSingleLog("2001.hal.error", "java.lang.IllegalStateException: I'm sorry, Dave. I'm afraid I can't do that.", expectedTags);
         assertThat(client.getTagsRestCalls()).containsOnly(
@@ -159,12 +157,10 @@ public class HawkularLoggerTest {
                 .builder()
                 .useHttpClient(uri -> client)
                 .buildLogger("2001.hal");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("t1", "v1");
-        tags.put("t2", "v2");
+        Tags tags = Tags.from(Tag.keyValue("t1", "v1"), Tag.keyValue("t2", "v2"));
         logger.warn("I'm sorry, Dave. I'm afraid I can't do that.", tags);
 
-        assertSingleLog("2001.hal.warning", "I'm sorry, Dave. I'm afraid I can't do that.", tags);
+        assertSingleLog("2001.hal.warning", "I'm sorry, Dave. I'm afraid I can't do that.", tags.toPresentMap());
         assertThat(client.getTagsRestCalls()).containsOnly(
                 new HttpClientMock.TagsData(
                         "/counters/2001.hal.warning.count/tags",
@@ -180,12 +176,10 @@ public class HawkularLoggerTest {
                 .builder()
                 .useHttpClient(uri -> client)
                 .buildLogger("2001.hal");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("t1", "v1");
-        tags.put("t2", "v2");
+        Tags tags = Tags.from(Tag.keyValue("t1", "v1"), Tag.keyValue("t2", "v2"));
         logger.warn(new IllegalStateException("I'm sorry, Dave. I'm afraid I can't do that."), tags);
 
-        Map<String, String> expectedTags = new HashMap<>(tags);
+        Map<String, String> expectedTags = tags.toPresentMap();
         expectedTags.put("class", "java.lang.IllegalStateException");
         assertSingleLog("2001.hal.warning", "java.lang.IllegalStateException: I'm sorry, Dave. I'm afraid I can't do that.", expectedTags);
         assertThat(client.getTagsRestCalls()).containsOnly(
@@ -241,12 +235,10 @@ public class HawkularLoggerTest {
                 .builder()
                 .useHttpClient(uri -> client)
                 .buildLogger("2001.hal");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("t1", "v1");
-        tags.put("t2", "v2");
+        Tags tags = Tags.from(Tag.keyValue("t1", "v1"), Tag.keyValue("t2", "v2"));
         logger.info("I'm sorry, Dave. I'm afraid I can't do that.", tags);
 
-        assertSingleLog("2001.hal.info", "I'm sorry, Dave. I'm afraid I can't do that.", tags);
+        assertSingleLog("2001.hal.info", "I'm sorry, Dave. I'm afraid I can't do that.", tags.toPresentMap());
         assertThat(client.getTagsRestCalls()).containsOnly(
                 new HttpClientMock.TagsData(
                         "/counters/2001.hal.info.count/tags",
@@ -262,12 +254,10 @@ public class HawkularLoggerTest {
                 .builder()
                 .useHttpClient(uri -> client)
                 .buildLogger("2001.hal");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("t1", "v1");
-        tags.put("t2", "v2");
+        Tags tags = Tags.from(Tag.keyValue("t1", "v1"), Tag.keyValue("t2", "v2"));
         logger.info(new IllegalStateException("I'm sorry, Dave. I'm afraid I can't do that."), tags);
 
-        Map<String, String> expectedTags = new HashMap<>(tags);
+        Map<String, String> expectedTags = tags.toPresentMap();
         expectedTags.put("class", "java.lang.IllegalStateException");
         assertSingleLog("2001.hal.info", "java.lang.IllegalStateException: I'm sorry, Dave. I'm afraid I can't do that.", expectedTags);
         assertThat(client.getTagsRestCalls()).containsOnly(
@@ -323,12 +313,10 @@ public class HawkularLoggerTest {
                 .builder()
                 .useHttpClient(uri -> client)
                 .buildLogger("2001.hal");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("t1", "v1");
-        tags.put("t2", "v2");
+        Tags tags = Tags.from(Tag.keyValue("t1", "v1"), Tag.keyValue("t2", "v2"));
         logger.debug("I'm sorry, Dave. I'm afraid I can't do that.", tags);
 
-        assertSingleLog("2001.hal.debug", "I'm sorry, Dave. I'm afraid I can't do that.", tags);
+        assertSingleLog("2001.hal.debug", "I'm sorry, Dave. I'm afraid I can't do that.", tags.toPresentMap());
         assertThat(client.getTagsRestCalls()).containsOnly(
                 new HttpClientMock.TagsData(
                         "/counters/2001.hal.debug.count/tags",
@@ -344,12 +332,10 @@ public class HawkularLoggerTest {
                 .builder()
                 .useHttpClient(uri -> client)
                 .buildLogger("2001.hal");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("t1", "v1");
-        tags.put("t2", "v2");
+        Tags tags = Tags.from(Tag.keyValue("t1", "v1"), Tag.keyValue("t2", "v2"));
         logger.debug(new IllegalStateException("I'm sorry, Dave. I'm afraid I can't do that."), tags);
 
-        Map<String, String> expectedTags = new HashMap<>(tags);
+        Map<String, String> expectedTags = tags.toPresentMap();
         expectedTags.put("class", "java.lang.IllegalStateException");
         assertSingleLog("2001.hal.debug", "java.lang.IllegalStateException: I'm sorry, Dave. I'm afraid I can't do that.", expectedTags);
         assertThat(client.getTagsRestCalls()).containsOnly(
@@ -367,12 +353,10 @@ public class HawkularLoggerTest {
                 .builder()
                 .useHttpClient(uri -> client)
                 .buildLogger("2001.hal");
-        Map<String, String> tags = new HashMap<>();
-        tags.put("t1", "v1");
-        tags.put("t2", "v2");
+        Tags tags = Tags.from(Tag.keyValue("t1", "v1"), Tag.keyValue("t2", "v2"));
         logger.error(new IllegalStateException("I'm sorry, Dave. I'm afraid I can't do that."), tags);
 
-        Map<String, String> expectedTags = new HashMap<>(tags);
+        Map<String, String> expectedTags = tags.toPresentMap();
         expectedTags.put("class", "java.lang.IllegalStateException");
         assertSingleLog("2001.hal.error", "java.lang.IllegalStateException: I'm sorry, Dave. I'm afraid I can't do that.", expectedTags);
         assertThat(client.getTagsRestCalls()).containsOnly(

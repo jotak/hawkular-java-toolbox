@@ -72,6 +72,12 @@ public class MonitoringSession {
         public MonitoringSession start() {
             return new MonitoringSession(frequency, timeUnit, threadPoolSize, feeds);
         }
+
+        public void run(Runnable r) {
+            MonitoringSession session = start();
+            r.run();
+            session.stop();
+        }
     }
 
     interface Feeder {

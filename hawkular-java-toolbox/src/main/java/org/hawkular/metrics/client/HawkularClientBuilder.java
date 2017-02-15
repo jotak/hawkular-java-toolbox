@@ -16,10 +16,11 @@
  */
 package org.hawkular.metrics.client;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -30,19 +31,25 @@ import java.util.regex.Pattern;
 import org.hawkular.metrics.client.common.HawkularClientConfig;
 import org.hawkular.metrics.client.common.http.HawkularHttpClient;
 import org.hawkular.metrics.client.common.http.JdkHawkularHttpClient;
+import org.hawkular.metrics.client.config.Credential;
 import org.hawkular.metrics.client.config.HawkularClientInfo;
+import org.hawkular.metrics.client.model.Tag;
+import org.hawkular.metrics.client.model.Tags;
 
 public class HawkularClientBuilder {
 
     private static final String KEY_HEADER_TENANT = "Hawkular-Tenant";
     private static final String KEY_HEADER_AUTHORIZATION = "Authorization";
 
+    private final String tenant;
+    private Optional<Credential> basicAuthCredential = Optional.empty();
+    private Optional<String> bearerToken = Optional.empty();
     private String uri = "http://localhost:8080";
     private Map<String, String> headers = new HashMap<>();
     private Optional<String> prefix = Optional.empty();
     private Optional<Function<String, HawkularHttpClient>> httpClientProvider = Optional.empty();
-    private final Map<String, String> globalTags = new HashMap<>();
-    private final Map<String, Map<String, String>> perMetricTags = new HashMap<>();
+    private final Tags globalTags = Tags.empty();
+    private final Map<String, Tags> perMetricTags = new HashMap<>();
     private final Collection<RegexTags> regexTags = new ArrayList<>();
     private Optional<Long> failoverCacheDuration = Optional.of(1000L * 60L * 10L); // In milliseconds; default: 10min
     private Optional<Integer> failoverCacheMaxSize = Optional.empty();
@@ -52,7 +59,7 @@ public class HawkularClientBuilder {
      * @param tenant the Hawkular tenant ID
      */
     public HawkularClientBuilder(String tenant) {
-        headers.put(KEY_HEADER_TENANT, tenant);
+        this.tenant = tenant;
     }
 
     /**
@@ -73,10 +80,13 @@ public class HawkularClientBuilder {
             config.getHeaders().forEach(builder::addHeader);
         }
         if (config.getGlobalTags() != null) {
-            builder.globalTags(config.getGlobalTags());
+            builder.globalTags(Tags.fromMap(config.getGlobalTags()));
         }
         if (config.getPerMetricTags() != null) {
-            builder.perMetricTags(config.getPerMetricTags());
+            builder.perMetricTags(
+                    config.getPerMetricTags().entrySet().stream().collect(toMap(
+                            Map.Entry::getKey,
+                            e -> Tags.fromMap(e.getValue()))));
         }
         if (config.getUsername() != null && config.getPassword() != null) {
             builder.basicAuth(config.getUsername(), config.getPassword());
@@ -101,8 +111,8 @@ public class HawkularClientBuilder {
      * @param password basic auth. password
      */
     public HawkularClientBuilder basicAuth(String username, String password) {
-        String encoded = Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
-        headers.put(KEY_HEADER_AUTHORIZATION, "Basic " + encoded);
+        basicAuthCredential = Optional.of(new Credential(username, password));
+        bearerToken = Optional.empty();
         return this;
     }
 
@@ -112,7 +122,8 @@ public class HawkularClientBuilder {
      * @param token the bearer token
      */
     public HawkularClientBuilder bearerToken(String token) {
-        headers.put(KEY_HEADER_AUTHORIZATION, "Bearer " + token);
+        bearerToken = Optional.of(token);
+        basicAuthCredential = Optional.empty();
         return this;
     }
 
@@ -139,9 +150,9 @@ public class HawkularClientBuilder {
      * It overrides any global tag that was already set.
      * @param tags global tags
      */
-    public HawkularClientBuilder globalTags(Map<String, String> tags) {
+    public HawkularClientBuilder globalTags(Tags tags) {
         this.globalTags.clear();
-        this.globalTags.putAll(tags);
+        this.globalTags.add(tags);
         return this;
     }
 
@@ -151,7 +162,7 @@ public class HawkularClientBuilder {
      * @param value tag value
      */
     public HawkularClientBuilder addGlobalTag(String key, String value) {
-        this.globalTags.put(key, value);
+        this.globalTags.add(Tag.keyValue(key, value));
         return this;
     }
 
@@ -159,7 +170,7 @@ public class HawkularClientBuilder {
      * Set all per-metric tags at once. It overrides any per-metric tag that was already set.
      * @param tags per-metric tags
      */
-    public HawkularClientBuilder perMetricTags(Map<String, Map<String, String>> tags) {
+    public HawkularClientBuilder perMetricTags(Map<String, Tags> tags) {
         this.perMetricTags.clear();
         this.regexTags.clear();
         tags.forEach((k,v) -> {
@@ -180,18 +191,12 @@ public class HawkularClientBuilder {
      * @param value tag value
      */
     public HawkularClientBuilder addMetricTag(String metric, String key, String value) {
-        Optional<RegexTags> optRegexTags = RegexTags.checkAndCreate(metric, Collections.singletonMap(key, value));
+        Optional<RegexTags> optRegexTags = RegexTags.checkAndCreate(metric, Tags.singleton(key, value));
         if (optRegexTags.isPresent()) {
             regexTags.add(optRegexTags.get());
         } else {
-            final Map<String, String> tags;
-            if (perMetricTags.containsKey(metric)) {
-                tags = perMetricTags.get(metric);
-            } else {
-                tags = new HashMap<>();
-                perMetricTags.put(metric, tags);
-            }
-            tags.put(key, value);
+            Tags tags = perMetricTags.computeIfAbsent(metric, m -> Tags.empty());
+            tags.add(Tag.keyValue(key, value));
         }
         return this;
     }
@@ -203,7 +208,7 @@ public class HawkularClientBuilder {
      * @param value tag value
      */
     public HawkularClientBuilder addRegexTag(Pattern pattern, String key, String value) {
-        regexTags.add(new RegexTags(pattern, Collections.singletonMap(key, value)));
+        regexTags.add(new RegexTags(pattern, Tags.singleton(key, value)));
         return this;
     }
 
@@ -260,16 +265,27 @@ public class HawkularClientBuilder {
         return this;
     }
 
+    private HawkularHttpClient setupClient() {
+        HawkularHttpClient client = httpClientProvider
+                .map(provider -> provider.apply(uri))
+                .orElseGet(() -> new JdkHawkularHttpClient(uri));
+        headers.put(KEY_HEADER_TENANT, tenant);
+        basicAuthCredential.ifPresent(cred -> {
+            String encoded = Base64.getEncoder().encodeToString((cred.getUsername() + ":" + cred.getPassword()).getBytes());
+            headers.put(KEY_HEADER_AUTHORIZATION, "Basic " + encoded);
+        });
+        bearerToken.ifPresent(token -> headers.put(KEY_HEADER_AUTHORIZATION, "Bearer " + token));
+        client.addHeaders(headers);
+        client.setFailoverOptions(failoverCacheDuration, failoverCacheMaxSize);
+        return client;
+    }
+
     /**
      * Build the {@link HawkularClient}
      */
     public HawkularClient build() {
-        HawkularHttpClient client = httpClientProvider
-                .map(provider -> provider.apply(uri))
-                .orElseGet(() -> new JdkHawkularHttpClient(uri));
-        client.addHeaders(headers);
-        client.setFailoverOptions(failoverCacheDuration, failoverCacheMaxSize);
-        return new HawkularClient(new HawkularClientInfo(client, headers.get(KEY_HEADER_TENANT), prefix, globalTags, perMetricTags, regexTags));
+        HawkularHttpClient client = setupClient();
+        return new HawkularClient(new HawkularClientInfo(client, tenant, uri, basicAuthCredential, bearerToken, prefix, globalTags, perMetricTags, regexTags));
     }
 
     public HawkularLogger buildLogger(Class<?> clazz) {

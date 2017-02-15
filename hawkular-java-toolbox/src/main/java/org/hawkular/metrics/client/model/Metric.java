@@ -16,8 +16,6 @@
  */
 package org.hawkular.metrics.client.model;
 
-import java.util.Map;
-
 /**
  * @author Joel Takvorian
  */
@@ -40,7 +38,7 @@ public class Metric {
         return name;
     }
 
-    public void tag(Map<String, String> tags) {
+    public void tag(Tags tags) {
         listener.tag(this, tags);
     }
 }

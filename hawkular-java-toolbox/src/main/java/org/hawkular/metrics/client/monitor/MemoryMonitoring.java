@@ -20,13 +20,12 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.hawkular.metrics.client.HawkularClient;
 import org.hawkular.metrics.client.model.Gauge;
+import org.hawkular.metrics.client.model.Tag;
+import org.hawkular.metrics.client.model.Tags;
 
 import com.sun.management.OperatingSystemMXBean;
 
@@ -35,9 +34,9 @@ import com.sun.management.OperatingSystemMXBean;
  */
 public class MemoryMonitoring implements MonitoringSession.FeederSet {
 
-    private final Map<String, String> tags;
+    private final Tags tags;
 
-    private MemoryMonitoring(Map<String, String> tags) {
+    private MemoryMonitoring(Tags tags) {
         this.tags = tags;
     }
 
@@ -56,7 +55,7 @@ public class MemoryMonitoring implements MonitoringSession.FeederSet {
     }
 
     public static MemoryMonitoring create() {
-        return new MemoryMonitoring(Collections.emptyMap());
+        return new MemoryMonitoring(Tags.empty());
     }
 
     public static Builder builder() {
@@ -64,22 +63,18 @@ public class MemoryMonitoring implements MonitoringSession.FeederSet {
     }
 
     public static class Builder {
-        private Map<String, String> tags = new HashMap<>();
+        private Tags tags = Tags.empty();
 
         private Builder() {
         }
 
-        public Builder disableAutoTagging() {
-            return this;
-        }
-
-        public Builder withTags(Map<String, String> tags) {
-            this.tags.putAll(tags);
+        public Builder withTags(Tags tags) {
+            this.tags.add(tags);
             return this;
         }
 
         public Builder withTag(String key, String value) {
-            this.tags.put(key, value);
+            this.tags.add(Tag.keyValue(key, value));
             return this;
         }
 

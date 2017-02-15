@@ -26,6 +26,7 @@ import org.hawkular.metrics.client.model.AvailabilityMetric;
 import org.hawkular.metrics.client.model.Counter;
 import org.hawkular.metrics.client.model.Gauge;
 import org.hawkular.metrics.client.model.Logger;
+import org.hawkular.metrics.client.model.Tags;
 import org.hawkular.metrics.client.model.Watch;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -66,7 +67,7 @@ public class HawkularClientTest {
         HawkularClient hwk = HawkularFactory.load().builder()
                 .useHttpClient(uri -> client)
                 .build();
-        Gauge gauge = hwk.gauge("2001.hal.heat", Collections.singletonMap("t1", "v1"));
+        Gauge gauge = hwk.gauge("2001.hal.heat", Tags.singleton("t1", "v1"));
         assertThat(gauge.getName()).isEqualTo("2001.hal.heat");
         assertThat(client.getMetricsRestCalls()).isEmpty();
         assertThat(client.getTagsRestCalls()).hasSize(1);
@@ -95,7 +96,7 @@ public class HawkularClientTest {
         assertThat(client.getMetricsRestCalls()).isEmpty();
         assertThat(client.getTagsRestCalls()).isEmpty();
 
-        counter.inc(Collections.singletonMap("t1", "v1"));
+        counter.inc(Tags.singleton("t1", "v1"));
         assertThat(client.getMetricsRestCalls()).hasSize(1);
         assertSingleValue(new JSONObject(client.getMetricsRestCalls().get(0)),
                 "counters",
@@ -106,7 +107,7 @@ public class HawkularClientTest {
         assertThat(client.getTagsRestCalls()).hasSize(0);
 
         client.clear();
-        counter.inc(Collections.singletonMap("t1", "v2"));
+        counter.inc(Tags.singleton("t1", "v2"));
         assertThat(client.getMetricsRestCalls()).hasSize(1);
         assertSingleValue(new JSONObject(client.getMetricsRestCalls().get(0)),
                 "counters",

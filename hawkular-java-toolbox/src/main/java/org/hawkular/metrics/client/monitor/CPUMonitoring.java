@@ -20,14 +20,13 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.hawkular.metrics.client.HawkularClient;
 import org.hawkular.metrics.client.model.Gauge;
+import org.hawkular.metrics.client.model.Tag;
+import org.hawkular.metrics.client.model.Tags;
 
 import com.sun.management.OperatingSystemMXBean;
 
@@ -37,10 +36,10 @@ import com.sun.management.OperatingSystemMXBean;
 public class CPUMonitoring implements MonitoringSession.FeederSet {
 
     private final boolean divideByNbCores;
-    private final Map<String, String> tags;
+    private final Tags tags;
     private Measures lastMeasures;
 
-    private CPUMonitoring(boolean divideByNbCores, Map<String, String> tags) {
+    private CPUMonitoring(boolean divideByNbCores, Tags tags) {
         this.divideByNbCores = divideByNbCores;
         this.tags = tags;
     }
@@ -75,7 +74,7 @@ public class CPUMonitoring implements MonitoringSession.FeederSet {
     }
 
     public static CPUMonitoring create() {
-        return new CPUMonitoring(false, Collections.emptyMap());
+        return new CPUMonitoring(false, Tags.empty());
     }
 
     public static Builder builder() {
@@ -96,7 +95,7 @@ public class CPUMonitoring implements MonitoringSession.FeederSet {
 
     public static class Builder {
         private boolean divideByNbCores;
-        private Map<String, String> tags = new HashMap<>();
+        private Tags tags = Tags.empty();
 
         private Builder() {
         }
@@ -106,13 +105,13 @@ public class CPUMonitoring implements MonitoringSession.FeederSet {
             return this;
         }
 
-        public Builder withTags(Map<String, String> tags) {
-            this.tags.putAll(tags);
+        public Builder withTags(Tags tags) {
+            this.tags.add(tags);
             return this;
         }
 
         public Builder withTag(String key, String value) {
-            this.tags.put(key, value);
+            this.tags.add(Tag.keyValue(key, value));
             return this;
         }
 

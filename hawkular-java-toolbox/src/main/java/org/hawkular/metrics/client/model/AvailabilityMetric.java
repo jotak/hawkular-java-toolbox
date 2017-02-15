@@ -16,8 +16,6 @@
  */
 package org.hawkular.metrics.client.model;
 
-import java.util.Map;
-
 /**
  * @author Joel Takvorian
  */
@@ -39,15 +37,15 @@ public class AvailabilityMetric extends Metric {
         listener.onChanged(this, DataPoint.availDataPoint(System.currentTimeMillis(), Availability.UNKNOWN));
     }
 
-    public void up(Map<String, String> tags) {
+    public void up(Tags tags) {
         listener.onChanged(this, DataPoint.availDataPoint(System.currentTimeMillis(), Availability.UP, tags));
     }
 
-    public void down(Map<String, String> tags) {
+    public void down(Tags tags) {
         listener.onChanged(this, DataPoint.availDataPoint(System.currentTimeMillis(), Availability.DOWN, tags));
     }
 
-    public void unknown(Map<String, String> tags) {
+    public void unknown(Tags tags) {
         listener.onChanged(this, DataPoint.availDataPoint(System.currentTimeMillis(), Availability.UNKNOWN, tags));
     }
 }

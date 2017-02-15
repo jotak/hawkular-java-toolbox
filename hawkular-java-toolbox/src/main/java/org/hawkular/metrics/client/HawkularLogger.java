@@ -16,21 +16,25 @@
  */
 package org.hawkular.metrics.client;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import org.hawkular.metrics.client.model.Tag;
+import org.hawkular.metrics.client.model.Tags;
 
 public class HawkularLogger {
 
-    private static final Map<String, String> MAP_SEVERITY_DEBUG = Collections.singletonMap("severity", "debug");
-    private static final Map<String, String> MAP_SEVERITY_INFO = Collections.singletonMap("severity", "info");
-    private static final Map<String, String> MAP_SEVERITY_WARNING = Collections.singletonMap("severity", "warning");
-    private static final Map<String, String> MAP_SEVERITY_ERROR = Collections.singletonMap("severity", "error");
+    private static final Tag TAG_SEVERITY = Tag.key("severity");
+    private static final Tags TAG_SEVERITY_DEBUG = Tags.from(TAG_SEVERITY.valued("debug"));
+    private static final Tags TAG_SEVERITY_INFO = Tags.from(TAG_SEVERITY.valued("info"));
+    private static final Tags TAG_SEVERITY_WARNING = Tags.from(TAG_SEVERITY.valued("warning"));
+    private static final Tags TAG_SEVERITY_ERROR = Tags.from(TAG_SEVERITY.valued("error"));
 
     private final HawkularClient inst;
 
     HawkularLogger(HawkularClient inst) {
         this.inst = inst;
+    }
+
+    public String getMetricsBase() {
+        return inst.getInfo().getPrefix().orElse("");
     }
 
     /**
@@ -46,9 +50,9 @@ public class HawkularLogger {
      * @param message the message logged on logs
      * @param dpTags datapoint tags to associate with this log
      */
-    public void debug(String message, Map<String, String> dpTags) {
-        inst.counter("debug.count", MAP_SEVERITY_DEBUG).inc(dpTags);
-        inst.logger("debug.logs", MAP_SEVERITY_DEBUG).log(message, dpTags);
+    public void debug(String message, Tags dpTags) {
+        inst.counter("debug.count", TAG_SEVERITY_DEBUG).inc(dpTags);
+        inst.logger("debug.logs", TAG_SEVERITY_DEBUG).log(message, dpTags);
     }
 
     /**
@@ -56,7 +60,7 @@ public class HawkularLogger {
      * @param t the exception / throwable
      */
     public void debug(Throwable t) {
-        debug(throwableToString(t), Collections.singletonMap("class", t.getClass().getName()));
+        debug(throwableToString(t), Tags.singleton("class", t.getClass().getName()));
     }
 
     /**
@@ -64,10 +68,8 @@ public class HawkularLogger {
      * @param t the exception / throwable
      * @param dpTags datapoint tags to associate with this log
      */
-    public void debug(Throwable t, Map<String, String> dpTags) {
-        Map<String, String> allDpTags = new HashMap<>(dpTags);
-        allDpTags.put("class", t.getClass().getName());
-        debug(throwableToString(t), allDpTags);
+    public void debug(Throwable t, Tags dpTags) {
+        debug(throwableToString(t), Tags.from(dpTags, Tags.singleton("class", t.getClass().getName())));
     }
 
     /**
@@ -83,9 +85,9 @@ public class HawkularLogger {
      * @param message the message logged on logs
      * @param dpTags datapoint tags to associate with this log
      */
-    public void info(String message, Map<String, String> dpTags) {
-        inst.counter("info.count", MAP_SEVERITY_INFO).inc(dpTags);
-        inst.logger("info.logs", MAP_SEVERITY_INFO).log(message, dpTags);
+    public void info(String message, Tags dpTags) {
+        inst.counter("info.count", TAG_SEVERITY_INFO).inc(dpTags);
+        inst.logger("info.logs", TAG_SEVERITY_INFO).log(message, dpTags);
     }
 
     /**
@@ -93,7 +95,7 @@ public class HawkularLogger {
      * @param t the exception / throwable
      */
     public void info(Throwable t) {
-        info(throwableToString(t), Collections.singletonMap("class", t.getClass().getName()));
+        info(throwableToString(t), Tags.singleton("class", t.getClass().getName()));
     }
 
     /**
@@ -101,10 +103,8 @@ public class HawkularLogger {
      * @param t the exception / throwable
      * @param dpTags datapoint tags to associate with this log
      */
-    public void info(Throwable t, Map<String, String> dpTags) {
-        Map<String, String> allDpTags = new HashMap<>(dpTags);
-        allDpTags.put("class", t.getClass().getName());
-        info(throwableToString(t), allDpTags);
+    public void info(Throwable t, Tags dpTags) {
+        info(throwableToString(t), Tags.from(dpTags, Tags.singleton("class", t.getClass().getName())));
     }
 
     /**
@@ -120,9 +120,9 @@ public class HawkularLogger {
      * @param message the message logged on logs
      * @param dpTags datapoint tags to associate with this log
      */
-    public void warn(String message, Map<String, String> dpTags) {
-        inst.counter("warning.count", MAP_SEVERITY_WARNING).inc(dpTags);
-        inst.logger("warning.logs", MAP_SEVERITY_WARNING).log(message, dpTags);
+    public void warn(String message, Tags dpTags) {
+        inst.counter("warning.count", TAG_SEVERITY_WARNING).inc(dpTags);
+        inst.logger("warning.logs", TAG_SEVERITY_WARNING).log(message, dpTags);
     }
 
     /**
@@ -130,7 +130,7 @@ public class HawkularLogger {
      * @param t the exception / throwable
      */
     public void warn(Throwable t) {
-        warn(throwableToString(t), Collections.singletonMap("class", t.getClass().getName()));
+        warn(throwableToString(t), Tags.singleton("class", t.getClass().getName()));
     }
 
     /**
@@ -138,10 +138,8 @@ public class HawkularLogger {
      * @param t the exception / throwable
      * @param dpTags datapoint tags to associate with this log
      */
-    public void warn(Throwable t, Map<String, String> dpTags) {
-        Map<String, String> allDpTags = new HashMap<>(dpTags);
-        allDpTags.put("class", t.getClass().getName());
-        warn(throwableToString(t), allDpTags);
+    public void warn(Throwable t, Tags dpTags) {
+        warn(throwableToString(t), Tags.from(dpTags, Tags.singleton("class", t.getClass().getName())));
     }
 
     /**
@@ -157,9 +155,9 @@ public class HawkularLogger {
      * @param message the message logged on logs
      * @param dpTags datapoint tags to associate with this log
      */
-    public void error(String message, Map<String, String> dpTags) {
-        inst.counter("error.count", MAP_SEVERITY_ERROR).inc(dpTags);
-        inst.logger("error.logs", MAP_SEVERITY_ERROR).log(message, dpTags);
+    public void error(String message, Tags dpTags) {
+        inst.counter("error.count", TAG_SEVERITY_ERROR).inc(dpTags);
+        inst.logger("error.logs", TAG_SEVERITY_ERROR).log(message, dpTags);
     }
 
     /**
@@ -167,7 +165,7 @@ public class HawkularLogger {
      * @param t the exception / throwable
      */
     public void error(Throwable t) {
-        error(throwableToString(t), Collections.singletonMap("class", t.getClass().getName()));
+        error(throwableToString(t), Tags.singleton("class", t.getClass().getName()));
     }
 
     /**
@@ -175,10 +173,8 @@ public class HawkularLogger {
      * @param t the exception / throwable
      * @param dpTags datapoint tags to associate with this log
      */
-    public void error(Throwable t, Map<String, String> dpTags) {
-        Map<String, String> allDpTags = new HashMap<>(dpTags);
-        allDpTags.put("class", t.getClass().getName());
-        error(throwableToString(t), allDpTags);
+    public void error(Throwable t, Tags dpTags) {
+        error(throwableToString(t), Tags.from(dpTags, Tags.singleton("class", t.getClass().getName())));
     }
 
     private static String throwableToString(Throwable t) {

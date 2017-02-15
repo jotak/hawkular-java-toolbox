@@ -16,10 +16,11 @@
  */
 package org.hawkular.metrics.client;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import org.hawkular.metrics.client.model.Tags;
 
 /**
  * @author Joel Takvorian
@@ -27,14 +28,14 @@ import java.util.regex.PatternSyntaxException;
 public class RegexTags {
 
     private final Pattern regex;
-    private final Map<String, String> tags;
+    private final Tags tags;
 
-    public RegexTags(Pattern regex, Map<String, String> tags) {
+    RegexTags(Pattern regex, Tags tags) {
         this.regex = regex;
         this.tags = tags;
     }
 
-    public static Optional<RegexTags> checkAndCreate(String maybeRegex, Map<String, String> tags) {
+    static Optional<RegexTags> checkAndCreate(String maybeRegex, Tags tags) {
         if (maybeRegex.startsWith("/") && maybeRegex.endsWith("/")) {
             try {
                 Pattern regex = Pattern.compile(maybeRegex.substring(1, maybeRegex.length() - 1));
@@ -46,7 +47,7 @@ public class RegexTags {
         return Optional.empty();
     }
 
-    public Optional<Map<String, String>> match(String metricName) {
+    Optional<Tags> match(String metricName) {
         if (regex.matcher(metricName).find()) {
             return Optional.of(tags);
         }
@@ -57,7 +58,7 @@ public class RegexTags {
         return regex;
     }
 
-    public Map<String, String> getTags() {
+    public Tags getTags() {
         return tags;
     }
 }

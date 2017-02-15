@@ -17,21 +17,21 @@
 package org.hawkular.metrics.client;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.hawkular.metrics.client.common.http.HawkularHttpClient;
 import org.hawkular.metrics.client.config.HawkularClientInfo;
 import org.hawkular.metrics.client.model.Metric;
+import org.hawkular.metrics.client.model.Tags;
 
 /**
  * @author Joel Takvorian
  */
 class MetricsTagger {
 
-    private final Map<String, String> globalTags;
-    private final Map<String, Map<String, String>> perMetricTags;
+    private final Tags globalTags;
+    private final Map<String, Tags> perMetricTags;
     private final Collection<RegexTags> regexTags;
     private final HawkularHttpClient hawkularClient;
 
@@ -42,23 +42,19 @@ class MetricsTagger {
         this.hawkularClient = config.getHttpClient();
     }
 
-    public void tagMetric(Metric metric, Map<String, String> newTags) {
-        Map<String, String> existingTags = perMetricTags.computeIfAbsent(metric.getName(), k -> new HashMap<>());
-        existingTags.putAll(newTags);
-
-        Map<String, String> tags = new LinkedHashMap<>(globalTags);
-        tags.putAll(getTagsForMetrics(metric.getName()));
-        if (!tags.isEmpty()) {
-            hawkularClient.putTags(metric.getHawkularType(), metric.getName(), HawkularJson.tagsToString(tags));
+    void tagMetric(Metric metric, Tags newTags) {
+        Tags matchingRegexTags = regexTags.stream()
+                .map(reg -> reg.match(metric.getName()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Tags::empty, Tags::from, Tags::from);
+        Tags allTags = Tags.from(
+                globalTags,
+                matchingRegexTags,
+                perMetricTags.getOrDefault(metric.getName(), Tags.empty()),
+                newTags);
+        if (!allTags.isEmpty()) {
+            hawkularClient.putTags(metric.getHawkularType(), metric.getName(), HawkularJson.tagsToString(allTags));
         }
-    }
-
-    private Map<String, String> getTagsForMetrics(String name) {
-        Map<String, String> tags = new LinkedHashMap<>();
-        regexTags.forEach(reg -> reg.match(name).ifPresent(tags::putAll));
-        if (perMetricTags.containsKey(name)) {
-            tags.putAll(perMetricTags.get(name));
-        }
-        return tags;
     }
 }

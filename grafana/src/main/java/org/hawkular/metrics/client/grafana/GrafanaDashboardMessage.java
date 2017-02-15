@@ -14,31 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.metrics.client.model;
-
-import java.util.concurrent.atomic.LongAdder;
+package org.hawkular.metrics.client.grafana;
 
 /**
  * @author Joel Takvorian
  */
-public class Counter extends Metric {
-    private LongAdder count = new LongAdder();
+public class GrafanaDashboardMessage {
 
-    public Counter(String name, MetricChangeListener listener) {
-        super("counters", name, listener);
+    private final GrafanaDashboard dashboard;
+    private final GrafanaDashboardContext context;
+
+    public GrafanaDashboardMessage(GrafanaDashboard dashboard, String datasource) {
+        this.dashboard = dashboard;
+        this.context = new GrafanaDashboardContext(datasource);
     }
 
-    public void inc() {
-        count.increment();
-        listener.onChanged(this, DataPoint.longDataPoint(System.currentTimeMillis(), count.longValue()));
-    }
-
-    public void inc(Tags tags) {
-        count.increment();
-        listener.onChanged(this, DataPoint.longDataPoint(System.currentTimeMillis(), count.longValue(), tags));
-    }
-
-    public Long getCount() {
-        return count.longValue();
+    public String toJson() {
+        return "{" +
+                "\"dashboard\":" + dashboard.toJson(context) +
+                ", \"overwrite\":true" +
+                '}';
     }
 }

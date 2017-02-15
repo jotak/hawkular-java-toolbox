@@ -16,7 +16,6 @@
  */
 package org.hawkular.metrics.client;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +28,7 @@ import org.hawkular.metrics.client.model.Gauge;
 import org.hawkular.metrics.client.model.Logger;
 import org.hawkular.metrics.client.model.Metric;
 import org.hawkular.metrics.client.model.MetricChangeListener;
+import org.hawkular.metrics.client.model.Tags;
 import org.hawkular.metrics.client.model.Watch;
 import org.hawkular.metrics.client.monitor.MonitoringSession;
 
@@ -57,7 +57,7 @@ public class HawkularClient {
     }
 
     private <T extends Metric> T metric(String name,
-                                        Map<String, String> tags,
+                                        Tags tags,
                                         Map<String, T> pool,
                                         BiFunction<String, MetricChangeListener, T> factory) {
         String fullname = info.getPrefix().map(p -> p + name).orElse(name);
@@ -74,13 +74,13 @@ public class HawkularClient {
      * Create a new {@link Gauge} with the given name
      */
     public Gauge gauge(String name) {
-        return metric(name, Collections.emptyMap(), gauges, Gauge::new);
+        return metric(name, Tags.empty(), gauges, Gauge::new);
     }
 
     /**
      * Create a new {@link Gauge} with the given name and tags
      */
-    public Gauge gauge(String name, Map<String, String> tags) {
+    public Gauge gauge(String name, Tags tags) {
         return metric(name, tags, gauges, Gauge::new);
     }
 
@@ -88,13 +88,13 @@ public class HawkularClient {
      * Create a new {@link Counter} with the given name
      */
     public Counter counter(String name) {
-        return metric(name, Collections.emptyMap(), counters, Counter::new);
+        return metric(name, Tags.empty(), counters, Counter::new);
     }
 
     /**
      * Create a new {@link Counter} with the given name and tags
      */
-    public Counter counter(String name, Map<String, String> tags) {
+    public Counter counter(String name, Tags tags) {
         return metric(name, tags, counters, Counter::new);
     }
 
@@ -102,13 +102,13 @@ public class HawkularClient {
      * Create a new {@link Watch} with the given name
      */
     public Watch watch(String name) {
-        return metric(name, Collections.emptyMap(), watches, Watch::new);
+        return metric(name, Tags.empty(), watches, Watch::new);
     }
 
     /**
      * Create a new {@link Watch} with the given name and tags
      */
-    public Watch watch(String name, Map<String, String> tags) {
+    public Watch watch(String name, Tags tags) {
         return metric(name, tags, watches, Watch::new);
     }
 
@@ -116,13 +116,13 @@ public class HawkularClient {
      * Create a new {@link AvailabilityMetric} with the given name
      */
     public AvailabilityMetric availability(String name) {
-        return metric(name, Collections.emptyMap(), avails, AvailabilityMetric::new);
+        return metric(name, Tags.empty(), avails, AvailabilityMetric::new);
     }
 
     /**
      * Create a new {@link AvailabilityMetric} with the given name and tags
      */
-    public AvailabilityMetric availability(String name, Map<String, String> tags) {
+    public AvailabilityMetric availability(String name, Tags tags) {
         return metric(name, tags, avails, AvailabilityMetric::new);
     }
 
@@ -130,13 +130,13 @@ public class HawkularClient {
      * Create a new {@link Logger} with the given name
      */
     public Logger logger(String name) {
-        return metric(name, Collections.emptyMap(), loggers, Logger::new);
+        return metric(name, Tags.empty(), loggers, Logger::new);
     }
 
     /**
      * Create a new {@link Logger} with the given name and tags
      */
-    public Logger logger(String name, Map<String, String> tags) {
+    public Logger logger(String name, Tags tags) {
         return metric(name, tags, loggers, Logger::new);
     }
 

@@ -16,7 +16,6 @@
  */
 package org.hawkular.metrics.client;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,6 +24,8 @@ import org.hawkular.metrics.client.model.AvailabilityMetric;
 import org.hawkular.metrics.client.model.Counter;
 import org.hawkular.metrics.client.model.Gauge;
 import org.hawkular.metrics.client.model.Logger;
+import org.hawkular.metrics.client.model.Tag;
+import org.hawkular.metrics.client.model.Tags;
 import org.hawkular.metrics.client.model.Watch;
 
 /**
@@ -33,8 +34,8 @@ import org.hawkular.metrics.client.model.Watch;
 public class MetricBuilder {
 
     private final HawkularClient hawkularClient;
-    private final Map<String, String> tags = new HashMap<>();
     private final Map<String, String> segments = new LinkedHashMap<>();
+    private final Tags tags = Tags.empty();
     private String separator = ".";
 
     public MetricBuilder(HawkularClient hawkularClient) {
@@ -43,12 +44,33 @@ public class MetricBuilder {
 
     public MetricBuilder addSegment(String name, String value) {
         segments.put(name, value);
-        tags.put(name, value);
+        tags.add(Tag.keyValue(name, value));
+        return this;
+    }
+
+    public MetricBuilder addSegment(Tag tag) {
+        tag.getValue().ifPresent(v -> segments.put(tag.getKey(), v));
+        tags.add(tag);
+        return this;
+    }
+
+    public MetricBuilder addSegments(Tags tags) {
+        tags.forEach(this::addSegment);
         return this;
     }
 
     public MetricBuilder addTag(String key, String value) {
-        tags.put(key, value);
+        tags.add(Tag.keyValue(key, value));
+        return this;
+    }
+
+    public MetricBuilder addTag(Tag tag) {
+        tags.add(tag);
+        return this;
+    }
+
+    public MetricBuilder addTags(Tags tags) {
+        tags.forEach(this::addTag);
         return this;
     }
 

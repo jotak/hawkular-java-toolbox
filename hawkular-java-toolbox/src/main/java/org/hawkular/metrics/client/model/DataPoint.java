@@ -16,7 +16,6 @@
  */
 package org.hawkular.metrics.client.model;
 
-import java.util.Map;
 import java.util.function.BiConsumer;
 
 import javax.json.Json;
@@ -35,10 +34,10 @@ public class DataPoint<T> {
 
     private final long timestamp;
     private final T data;
-    private final Map<String, String> dpTags;
+    private final Tags dpTags;
     private BiConsumer<T, JsonObjectBuilder> valueAdder;
 
-    public DataPoint(long timestamp, T data, Map<String, String> dpTags, BiConsumer<T, JsonObjectBuilder> valueAdder) {
+    public DataPoint(long timestamp, T data, Tags dpTags, BiConsumer<T, JsonObjectBuilder> valueAdder) {
         this.timestamp = timestamp;
         this.data = data;
         this.dpTags = dpTags;
@@ -53,7 +52,7 @@ public class DataPoint<T> {
         return data;
     }
 
-    public Map<String, String> getDpTags() {
+    public Tags getDpTags() {
         return dpTags;
     }
 
@@ -63,25 +62,25 @@ public class DataPoint<T> {
         valueAdder.accept(data, builder);
         if (dpTags != null && !dpTags.isEmpty()) {
             JsonObjectBuilder tags = Json.createObjectBuilder();
-            dpTags.forEach(tags::add);
+            dpTags.forEachPresent(tags::add);
             builder.add("tags", tags.build());
         }
         return builder.build();
     }
 
-    public static DataPoint<Double> doubleDataPoint(long timestamp, double data, Map<String, String> dpTags) {
+    public static DataPoint<Double> doubleDataPoint(long timestamp, double data, Tags dpTags) {
         return new DataPoint<>(timestamp, data, dpTags, DOUBLE_JSON_ADDER);
     }
 
-    public static DataPoint<Long> longDataPoint(long timestamp, long data, Map<String, String> dpTags) {
+    public static DataPoint<Long> longDataPoint(long timestamp, long data, Tags dpTags) {
         return new DataPoint<>(timestamp, data, dpTags, LONG_JSON_ADDER);
     }
 
-    public static DataPoint<String> stringDataPoint(long timestamp, String data, Map<String, String> dpTags) {
+    public static DataPoint<String> stringDataPoint(long timestamp, String data, Tags dpTags) {
         return new DataPoint<>(timestamp, data, dpTags, STRING_JSON_ADDER);
     }
 
-    public static DataPoint<Availability> availDataPoint(long timestamp, Availability data, Map<String, String> dpTags) {
+    public static DataPoint<Availability> availDataPoint(long timestamp, Availability data, Tags dpTags) {
         return new DataPoint<>(timestamp, data, dpTags, AVAIL_JSON_ADDER);
     }
 

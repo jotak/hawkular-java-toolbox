@@ -17,14 +17,14 @@
 package org.hawkular.metrics.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.entry;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.hawkular.metrics.client.config.HawkularClientInfo;
+import org.hawkular.metrics.client.model.Tag;
+import org.hawkular.metrics.client.model.Tags;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -60,9 +60,9 @@ public class HawkularFactoryTest {
         HawkularClientInfo info = HawkularFactory.load().create().getInfo();
         assertThat(info.getTenant()).isEqualTo("cyrus");
         assertThat(info.getPrefix()).hasValue(HOST + ".");
-        assertThat(info.getGlobalTags()).containsOnly(
-                entry("hostname", HOST),
-                entry("owner", "jdoe"));
+        assertThat(info.getGlobalTags().asList()).containsOnly(
+                Tag.keyValue("hostname", HOST),
+                Tag.keyValue("owner", "jdoe"));
         assertThat(info.getPerMetricTags()).isEmpty();
     }
 
@@ -72,10 +72,10 @@ public class HawkularFactoryTest {
         assertThat(info.getTenant()).isEqualTo("darius");
         assertThat(info.getPrefix()).hasValue(HOST + ".");
         assertThat(info.getPerMetricTags()).containsOnlyKeys("guava.cache.read");
-        Map<String, String> tags = info.getPerMetricTags().get("guava.cache.read");
-        assertThat(tags).containsOnly(entry("impl", "guava"));
-        assertThat(info.getGlobalTags()).isEmpty();
+        Tags tags = info.getPerMetricTags().get("guava.cache.read");
+        assertThat(tags.asList()).containsOnly(Tag.keyValue("impl", "guava"));
+        assertThat(info.getGlobalTags().asList()).isEmpty();
         assertThat(info.getRegexTags()).extracting(r -> r.getRegex().toString()).containsExactly(Pattern.compile("ehcache\\..*").toString());
-        assertThat(info.getRegexTags().iterator().next().getTags()).containsOnly(entry("impl", "ehcache"));
+        assertThat(info.getRegexTags().iterator().next().getTags().asList()).containsOnly(Tag.keyValue("impl", "ehcache"));
     }
 }

@@ -16,8 +16,6 @@
  */
 package org.hawkular.metrics.client.model;
 
-import java.util.Map;
-
 /**
  * @author Joel Takvorian
  */
@@ -31,7 +29,7 @@ public class Gauge extends Metric {
         listener.onChanged(this, DataPoint.doubleDataPoint(System.currentTimeMillis(), value));
     }
 
-    public void set(double value, Map<String, String> tags) {
+    public void set(double value, Tags tags) {
         listener.onChanged(this, DataPoint.doubleDataPoint(System.currentTimeMillis(), value, tags));
     }
 }

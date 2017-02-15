@@ -16,8 +16,6 @@
  */
 package org.hawkular.metrics.client.model;
 
-import java.util.Map;
-
 /**
  * @author Joel Takvorian
  */
@@ -31,7 +29,7 @@ public class Logger extends Metric {
         listener.onChanged(this, DataPoint.stringDataPoint(System.currentTimeMillis(), value));
     }
 
-    public void log(String value, Map<String, String> tags) {
+    public void log(String value, Tags tags) {
         listener.onChanged(this, DataPoint.stringDataPoint(System.currentTimeMillis(), value, tags));
     }
 }

@@ -14,31 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.hawkular.metrics.client.model;
-
-import java.util.concurrent.atomic.LongAdder;
+package org.hawkular.metrics.client.config;
 
 /**
  * @author Joel Takvorian
  */
-public class Counter extends Metric {
-    private LongAdder count = new LongAdder();
+public class Credential {
+    private final String username;
+    private final String password;
 
-    public Counter(String name, MetricChangeListener listener) {
-        super("counters", name, listener);
+    public Credential(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
-    public void inc() {
-        count.increment();
-        listener.onChanged(this, DataPoint.longDataPoint(System.currentTimeMillis(), count.longValue()));
+    public String getUsername() {
+        return username;
     }
 
-    public void inc(Tags tags) {
-        count.increment();
-        listener.onChanged(this, DataPoint.longDataPoint(System.currentTimeMillis(), count.longValue(), tags));
-    }
-
-    public Long getCount() {
-        return count.longValue();
+    public String getPassword() {
+        return password;
     }
 }

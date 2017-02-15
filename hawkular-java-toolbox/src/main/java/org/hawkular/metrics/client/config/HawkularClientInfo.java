@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.hawkular.metrics.client.RegexTags;
 import org.hawkular.metrics.client.common.http.HawkularHttpClient;
+import org.hawkular.metrics.client.model.Tags;
 
 /**
  * @author Joel Takvorian
@@ -30,20 +31,28 @@ public class HawkularClientInfo {
 
     private final HawkularHttpClient httpClient;
     private final String tenant;
+    private final String uri;
+    private final Optional<Credential> basicAuthCredential;
+    private final Optional<String> bearerToken;
     private final Optional<String> prefix;
-    private final Map<String, String> globalTags;
-    private final Map<String, Map<String, String>> perMetricTags;
+    private final Tags globalTags;
+    private final Map<String, Tags> perMetricTags;
     private final Collection<RegexTags> regexTags;
 
     public HawkularClientInfo(
             HawkularHttpClient httpClient,
             String tenant,
+            String uri, Optional<Credential> basicAuthCredential,
+            Optional<String> bearerToken,
             Optional<String> prefix,
-            Map<String, String> globalTags,
-            Map<String, Map<String, String>> perMetricTags,
+            Tags globalTags,
+            Map<String, Tags> perMetricTags,
             Collection<RegexTags> regexTags) {
         this.httpClient = httpClient;
         this.tenant = tenant;
+        this.uri = uri;
+        this.basicAuthCredential = basicAuthCredential;
+        this.bearerToken = bearerToken;
         this.prefix = prefix;
         this.globalTags = globalTags;
         this.perMetricTags = perMetricTags;
@@ -54,19 +63,31 @@ public class HawkularClientInfo {
         return tenant;
     }
 
+    public String getUri() {
+        return uri;
+    }
+
     public HawkularHttpClient getHttpClient() {
         return httpClient;
+    }
+
+    public Optional<Credential> getBasicAuthCredential() {
+        return basicAuthCredential;
+    }
+
+    public Optional<String> getBearerToken() {
+        return bearerToken;
     }
 
     public Optional<String> getPrefix() {
         return prefix;
     }
 
-    public Map<String, String> getGlobalTags() {
+    public Tags getGlobalTags() {
         return globalTags;
     }
 
-    public Map<String, Map<String, String>> getPerMetricTags() {
+    public Map<String, Tags> getPerMetricTags() {
         return perMetricTags;
     }
 

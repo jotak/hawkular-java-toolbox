@@ -16,8 +16,6 @@
  */
 package org.hawkular.metrics.client.model;
 
-import java.util.Map;
-
 /**
  * @author Joel Takvorian
  */
@@ -40,7 +38,7 @@ public class Watch extends Metric {
         timestamp = tick;
     }
 
-    public void tick(Map<String, String> tags) {
+    public void tick(Tags tags) {
         long tick = System.currentTimeMillis();
         listener.onChanged(this, DataPoint.doubleDataPoint(System.currentTimeMillis(), tick - timestamp, tags));
         timestamp = tick;
