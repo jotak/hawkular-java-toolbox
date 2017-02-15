@@ -35,14 +35,14 @@ Then add it as a maven module:
 Configuration can be externalized in a YAML file:
 
 ```yaml
-tenant: jotak
+tenant: my-tenant
 prefix: ${host}.
 globalTags:
   hostname: ${host}
   who: jotak
 ```
 
-It's not an exhaustive example, you can also setup uri, authentication, etc. Full list of config keys are not yet documented but you can refer to _src/main/java/org/hawkular/metrics/client/config/HawkularYamlConfig.java_
+It's not an exhaustive example, you can also setup uri, authentication, etc. Full list of config keys are not yet documented but you can refer to [HawkularYamlConfig.java](hawkular-java-toolbox/src/main/java/org/hawkular/metrics/client/config/HawkularYamlConfig.java).
 All in all it's similar to the _HawkularClientBuilder_ class, which has a correct javadoc.
 
 _${host}_ will be automatically resolved as the hostname. It's currently the only possible variable, though more may come in the future.
