@@ -116,12 +116,12 @@ and tagged _impl:ehcache, source:cache, metric:read_. _MetricBuilder_ is flexibl
 
 ## Logging
 
-There's two kind of loggers:
+There's two kinds of loggers:
 
-- the simple _Logger_ metric type, which is barely a "String" metric that can be feed in  a completely custom way.
+- the simple _Logger_ metric type, which is barely a "String" metric that can be feeded in a completely custom way.
 - and the _HawkularLogger_ class, that is shamelessly inspired from existing Java logging frameworks (like log4j), but with the particularity of being tied to Hawkular, as you had guessed.
 
-You can create an _HawkularLogger_ from the _HawkularFactory_ described above:
+You can create an _HawkularLogger_ from _HawkularFactory_:
 
 ```java
     private static final HawkularLogger HWK = HawkularFactory.load().logger(MyClass.class);
