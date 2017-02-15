@@ -16,8 +16,8 @@
  */
 package org.hawkular.metrics.client;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.hawkular.metrics.client.model.AvailabilityMetric;
@@ -34,7 +34,7 @@ import org.hawkular.metrics.client.model.Watch;
 public class MetricBuilder {
 
     private final HawkularClient hawkularClient;
-    private final Map<String, String> segments = new LinkedHashMap<>();
+    private final List<String> segments = new ArrayList<>();
     private final Tags tags = Tags.empty();
     private String separator = ".";
 
@@ -42,14 +42,19 @@ public class MetricBuilder {
         this.hawkularClient = hawkularClient;
     }
 
+    public MetricBuilder addSegment(String value) {
+        segments.add(value);
+        return this;
+    }
+
     public MetricBuilder addSegment(String name, String value) {
-        segments.put(name, value);
+        segments.add(value);
         tags.add(Tag.keyValue(name, value));
         return this;
     }
 
     public MetricBuilder addSegment(Tag tag) {
-        tag.getValue().ifPresent(v -> segments.put(tag.getKey(), v));
+        tag.getValue().ifPresent(segments::add);
         tags.add(tag);
         return this;
     }
@@ -80,7 +85,7 @@ public class MetricBuilder {
     }
 
     private String buildName() {
-        return segments.values().stream().collect(Collectors.joining(separator));
+        return segments.stream().collect(Collectors.joining(separator));
     }
 
     public Gauge toGauge() {
