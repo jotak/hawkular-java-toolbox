@@ -71,7 +71,7 @@
 
     <!-- Dependency versions -->
     <glassfish-json.version>1.0.4</glassfish-json.version>
-    <hawkular.version>0.25.0-SNAPSHOT</hawkular.version>
+    <hawkular.version>0.26.1.Final</hawkular.version>
     <slf4j.version>1.7.7</slf4j.version>
     <snakeyaml.version>1.12</snakeyaml.version>
   </properties>

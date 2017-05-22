@@ -211,7 +211,7 @@ Then, create and export dashboards to Grafana. For example, a dashboard created 
     grafanaConnection.sendDashboard(new GrafanaDashboardMessage(dashboardAllAtOnce, "my-datasource"));
 ```
 
-It's also possible the add a specific metric to a dashboard: 
+It's also possible the add a specific metric to a dashboard:
 
 ```java
     Gauge sizeGauge = hawkular.gauge("size");
@@ -240,7 +240,7 @@ If you already use dropwizard and want to use this toolbox additionally, you may
     </dependency>
 ```
 
-Then, bind them together. Example: 
+Then, bind them together. Example:
 ```java
     HawkularDropwizardBinder
             .fromRegistry(dropwizardRegistry)
