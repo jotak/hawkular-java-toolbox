@@ -230,7 +230,7 @@ Also, an _HawkularLogger_ can be directly exported as annotations:
 
 There's obviously some overlap between this toolbox and [Dropwizard metrics](http://metrics.dropwizard.io/3.1.0/). Hawkular already has its [Dropwizard reporter](https://github.com/hawkular/hawkular-dropwizard-reporter).
 
-If you already use dropwizard and want to use this toolbox additionally, you may want to report the dropwizard metrics to Hawkular as well. In order to do so, this maven depdency must be added:
+If you already use dropwizard and want to use this toolbox additionally, you may want to report the dropwizard metrics to Hawkular as well. In order to do so, this maven dependency must be added:
 
 ```xml
     <dependency>
